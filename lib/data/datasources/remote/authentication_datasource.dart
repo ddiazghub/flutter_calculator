@@ -1,7 +1,3 @@
-import 'package:http/http.dart' as http;
-import 'package:loggy/loggy.dart';
-import 'dart:convert';
-
 class AuthenticationDatatasource {
   Future<bool> login(String email, String password) async {
     var request =
@@ -10,14 +6,14 @@ class AuthenticationDatatasource {
       "results": "1",
     }));
 
-    return Future.error("error");
+    return Future.value(true);
   }
 
   Future<bool> signUp(String email, String password) async {
-    return Future.error("error");
+    return Future.value(true);
   }
 
   Future<bool> logOut() async {
-    return Future.error("error");
+    return Future.value(true);
   }
 }

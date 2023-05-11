@@ -12,7 +12,7 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
-  int _selectIndex = 0;
+  final int _selectIndex = 0;
   AuthenticationController authenticationController = Get.find();
 
   _logout() async {
