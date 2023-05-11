@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'domain/repositories/repository.dart';
-import 'domain/use_case/authentication.dart';
+import 'domain/use_case/authentication_usecase.dart';
 
 void main() {
   Get.put(Repository());
-  Get.put(Authentication());
+  Get.put(AuthenticationUseCase());
   Get.put(AuthenticationController());
   runApp(const MyApp());
 }

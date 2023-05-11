@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
 import '../controller/authentication_controller.dart';
+import '../controller/user_controller.dart';
 
 class ContentPage extends StatefulWidget {
   const ContentPage({super.key});
@@ -25,6 +26,7 @@ class _ContentPageState extends State<ContentPage> {
 
   @override
   Widget build(BuildContext context) {
+    UserController userController = Get.find();
     return Scaffold(
       appBar: AppBar(title: const Text("Welcome"), actions: [
         IconButton(
@@ -33,7 +35,23 @@ class _ContentPageState extends State<ContentPage> {
               _logout();
             }),
       ]),
-      body: const Center(child: Text('content')),
+      body: Center(child: _getXlistView()),
+    );
+  }
+
+  Widget _getXlistView() {
+    UserController userController = Get.find();
+    return Obx(
+      () => ListView.builder(
+        itemCount: userController.users.length,
+        itemBuilder: (context, index) {
+          final user = userController.users[index];
+          return ListTile(
+            title: Text(userController.getUsers[index].name),
+            subtitle: Text(userController.getUsers[index].email),
+          );
+        },
+      ),
     );
   }
 }

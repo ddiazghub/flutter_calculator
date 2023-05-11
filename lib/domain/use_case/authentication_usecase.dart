@@ -1,7 +1,7 @@
 import 'package:f_web_authentication/domain/repositories/repository.dart';
 import 'package:get/get.dart';
 
-class Authentication {
+class AuthenticationUseCase {
   final Repository _repository = Get.find();
 
   Future<bool> login(String email, String password) async =>

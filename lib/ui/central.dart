@@ -11,8 +11,7 @@ class Central extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthenticationController authenticationController = Get.find();
-    return Obx(() => authenticationController.isLogged
-        ? const ContentPage()
-        : const LoginPage());
+    return Obx(() =>
+        authenticationController.isLogged ? ContentPage() : const LoginPage());
   }
 }
