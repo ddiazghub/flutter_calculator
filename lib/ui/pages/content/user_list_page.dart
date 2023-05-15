@@ -1,19 +1,21 @@
+import 'package:f_web_authentication/ui/pages/content/edit_user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
-import '../../domain/models/user.dart';
-import '../controller/authentication_controller.dart';
-import '../controller/user_controller.dart';
+import '../../../domain/models/user.dart';
+import '../../controller/authentication_controller.dart';
+import '../../controller/user_controller.dart';
+import 'new_user_page.dart';
 
-class ContentPage extends StatefulWidget {
-  const ContentPage({super.key});
+class UserListPage extends StatefulWidget {
+  const UserListPage({super.key});
 
   @override
-  State<ContentPage> createState() => _ContentPageState();
+  State<UserListPage> createState() => _UserListPageState();
 }
 
-class _ContentPageState extends State<ContentPage> {
+class _UserListPageState extends State<UserListPage> {
   UserController userController = Get.find();
   AuthenticationController authenticationController = Get.find();
 
@@ -40,8 +42,7 @@ class _ContentPageState extends State<ContentPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           logInfo("Add user from UI");
-          await userController.addUser(
-              User(fistName: 'AA', lastName: 'BB', email: 'CC@cc.com'));
+          Get.to(() => const NewUserPage());
         },
         child: const Icon(Icons.add),
       ),
@@ -57,6 +58,9 @@ class _ContentPageState extends State<ContentPage> {
           return ListTile(
             title: Text(user.name),
             subtitle: Text(user.email),
+            onTap: () {
+              Get.to(() => const EditUserPage(), arguments: [user, user.id]);
+            },
           );
         },
       ),

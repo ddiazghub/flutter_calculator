@@ -26,7 +26,23 @@ class UserDataSource {
     return Future.value(users);
   }
 
-  addUser(User user) {
+  Future<bool> addUser(User user) async {
     logInfo("Web service, Adding user");
+
+    final response = await http.post(
+      Uri.parse("https://retoolapi.dev/RltqBw/data"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(user.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      logInfo(response.body);
+      return Future.value(true);
+    } else {
+      logError("Got error code ${response.statusCode}");
+      return Future.value(false);
+    }
   }
 }
