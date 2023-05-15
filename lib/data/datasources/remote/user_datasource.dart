@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class UserDataSource {
   Future<List<User>> getUsers() async {
     List<User> users = [];
-    var request = Uri.parse("https://retoolapi.dev/1Bpr3u/user")
+    var request = Uri.parse("https://retoolapi.dev/RltqBw/data")
         .resolveUri(Uri(queryParameters: {
       "format": 'json',
     }));

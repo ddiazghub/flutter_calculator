@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
+import '../../domain/models/user.dart';
 import '../controller/authentication_controller.dart';
 import '../controller/user_controller.dart';
 
@@ -13,7 +14,7 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
-  final int _selectIndex = 0;
+  UserController userController = Get.find();
   AuthenticationController authenticationController = Get.find();
 
   _logout() async {
@@ -36,19 +37,24 @@ class _ContentPageState extends State<ContentPage> {
             }),
       ]),
       body: Center(child: _getXlistView()),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          userController.getUers();
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
   Widget _getXlistView() {
-    UserController userController = Get.find();
     return Obx(
       () => ListView.builder(
         itemCount: userController.users.length,
         itemBuilder: (context, index) {
-          final user = userController.users[index];
+          User user = userController.users[index];
           return ListTile(
-            title: Text(userController.getUsers[index].name),
-            subtitle: Text(userController.getUsers[index].email),
+            title: Text(user.name),
+            subtitle: Text(user.email),
           );
         },
       ),
