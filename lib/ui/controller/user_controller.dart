@@ -22,7 +22,8 @@ class UserController extends GetxController {
   }
 
   addUser(User user) async {
-    await userUseCase.addUser();
-    getUers();
+    logInfo("Add user");
+    //await userUseCase.addUser(user);
+    await getUers();
   }
 }

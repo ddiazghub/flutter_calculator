@@ -38,8 +38,10 @@ class _ContentPageState extends State<ContentPage> {
       ]),
       body: Center(child: _getXlistView()),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          userController.getUers();
+        onPressed: () async {
+          logInfo("Add user from UI");
+          await userController.addUser(
+              User(fistName: 'AA', lastName: 'BB', email: 'CC@cc.com'));
         },
         child: const Icon(Icons.add),
       ),

@@ -21,4 +21,7 @@ class Repository {
   Future<bool> logOut() async => await _authenticationDataSource.logOut();
 
   Future<List<User>> getUsers() async => await _userDatatasource.getUsers();
+
+  Future<bool> addUser(User user) async =>
+      await _userDatatasource.addUser(user);
 }

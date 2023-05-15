@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:loggy/loggy.dart';
 
 import '../../../domain/models/user.dart';
@@ -15,10 +17,16 @@ class UserDataSource {
 
     if (response.statusCode == 200) {
       logInfo(response.body);
+      final data = jsonDecode(response.body);
+      users = List<User>.from(data.map((x) => User.fromJson(x)));
     } else {
       logError("Got error code ${response.statusCode}");
     }
 
     return Future.value(users);
+  }
+
+  addUser(User user) {
+    logInfo("Web service, Adding user");
   }
 }

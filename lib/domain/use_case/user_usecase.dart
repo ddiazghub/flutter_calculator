@@ -14,5 +14,5 @@ class UserUseCase {
     return await _repository.getUsers();
   }
 
-  Future<void> addUser() async {}
+  Future<void> addUser(User user) async => await _repository.addUser(user);
 }
