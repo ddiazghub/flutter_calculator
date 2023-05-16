@@ -32,4 +32,9 @@ class UserController extends GetxController {
     await userUseCase.updateUser(user);
     getUers();
   }
+
+  void deleteUser(int id) async {
+    await userUseCase.deleteUser(id);
+    getUers();
+  }
 }

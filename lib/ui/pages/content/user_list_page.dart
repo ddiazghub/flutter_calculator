@@ -55,12 +55,31 @@ class _UserListPageState extends State<UserListPage> {
         itemCount: userController.users.length,
         itemBuilder: (context, index) {
           User user = userController.users[index];
-          return ListTile(
-            title: Text(user.name),
-            subtitle: Text(user.email),
-            onTap: () {
-              Get.to(() => const EditUserPage(), arguments: [user, user.id]);
+          return Dismissible(
+            key: UniqueKey(),
+            background: Container(
+                color: Colors.red,
+                alignment: Alignment.centerLeft,
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text(
+                    "Deleting",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )),
+            onDismissed: (direction) {
+              userController.deleteUser(user.id!);
             },
+            child: Card(
+              child: ListTile(
+                title: Text(user.name),
+                subtitle: Text(user.email),
+                onTap: () {
+                  Get.to(() => const EditUserPage(),
+                      arguments: [user, user.id]);
+                },
+              ),
+            ),
           );
         },
       ),

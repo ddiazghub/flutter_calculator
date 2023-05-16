@@ -27,4 +27,7 @@ class Repository {
 
   Future<bool> updateUser(User user) async =>
       await _userDatatasource.updateUser(user);
+
+  Future<bool> deleteUser(int id) async =>
+      await _userDatatasource.deleteUser(id);
 }

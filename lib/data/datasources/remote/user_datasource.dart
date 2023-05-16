@@ -63,4 +63,21 @@ class UserDataSource {
       return Future.value(false);
     }
   }
+
+  Future<bool> deleteUser(int id) async {
+    final response = await http.delete(
+      Uri.parse("https://retoolapi.dev/RltqBw/data/$id"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 201) {
+      //logInfo(response.body);
+      return Future.value(true);
+    } else {
+      logError("Got error code ${response.statusCode}");
+      return Future.value(false);
+    }
+  }
 }
