@@ -18,24 +18,7 @@ class _FirebaseSignUpState extends State<SignUp> {
 
   _signup(theEmail, thePassword) async {
     try {
-      bool result =
-          await authenticationController.signUp(theEmail, thePassword);
-
-      if (result) {
-        Get.snackbar(
-          "Sign Up",
-          'OK',
-          icon: const Icon(Icons.person, color: Colors.red),
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      } else {
-        Get.snackbar(
-          "Sign Up",
-          'NOK',
-          icon: const Icon(Icons.person, color: Colors.red),
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
+      await authenticationController.signUp(theEmail, thePassword);
 
       Get.snackbar(
         "Sign Up",

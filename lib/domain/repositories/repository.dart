@@ -12,7 +12,7 @@ class Repository {
     _userDatatasource = UserDataSource();
   }
 
-  Future<bool> login(String email, String password) async =>
+  Future<String> login(String email, String password) async =>
       await _authenticationDataSource.login(email, password);
 
   Future<bool> signUp(String email, String password) async =>
