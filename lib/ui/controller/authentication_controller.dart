@@ -23,6 +23,7 @@ class AuthenticationController extends GetxController {
 
   Future<bool> signUp(email, password) async {
     final AuthenticationUseCase authentication = Get.find();
+    logInfo('Controller Sign Up');
     var result = await authentication.signUp(email, password);
     return result;
   }

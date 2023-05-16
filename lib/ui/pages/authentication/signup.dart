@@ -12,13 +12,30 @@ class SignUp extends StatefulWidget {
 
 class _FirebaseSignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
-  final controllerEmail = TextEditingController();
-  final controllerPassword = TextEditingController();
+  final controllerEmail = TextEditingController(text: 'a@a.com');
+  final controllerPassword = TextEditingController(text: '123456');
   AuthenticationController authenticationController = Get.find();
 
   _signup(theEmail, thePassword) async {
     try {
-      await authenticationController.signUp(theEmail, thePassword);
+      bool result =
+          await authenticationController.signUp(theEmail, thePassword);
+
+      if (result) {
+        Get.snackbar(
+          "Sign Up",
+          'OK',
+          icon: const Icon(Icons.person, color: Colors.red),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          "Sign Up",
+          'NOK',
+          icon: const Icon(Icons.person, color: Colors.red),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
 
       Get.snackbar(
         "Sign Up",
@@ -27,6 +44,7 @@ class _FirebaseSignUpState extends State<SignUp> {
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (err) {
+      logError('SignUp error $err');
       Get.snackbar(
         "Sign Up",
         err.toString(),
@@ -93,14 +111,14 @@ class _FirebaseSignUpState extends State<SignUp> {
                           height: 20,
                         ),
                         TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               final form = _formKey.currentState;
                               form!.save();
                               // this line dismiss the keyboard by taking away the focus of the TextFormField and giving it to an unused
                               FocusScope.of(context).requestFocus(FocusNode());
                               if (_formKey.currentState!.validate()) {
                                 logInfo('SignUp validation form ok');
-                                _signup(controllerEmail.text,
+                                await _signup(controllerEmail.text,
                                     controllerPassword.text);
                               } else {
                                 logError('SignUp validation form nok');
