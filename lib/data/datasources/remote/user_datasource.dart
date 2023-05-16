@@ -16,7 +16,7 @@ class UserDataSource {
     var response = await http.get(request);
 
     if (response.statusCode == 200) {
-      logInfo(response.body);
+      //logInfo(response.body);
       final data = jsonDecode(response.body);
       users = List<User>.from(data.map((x) => User.fromJson(x)));
     } else {
@@ -38,7 +38,25 @@ class UserDataSource {
     );
 
     if (response.statusCode == 201) {
-      logInfo(response.body);
+      //logInfo(response.body);
+      return Future.value(true);
+    } else {
+      logError("Got error code ${response.statusCode}");
+      return Future.value(false);
+    }
+  }
+
+  Future<bool> updateUser(User user) async {
+    final response = await http.put(
+      Uri.parse("https://retoolapi.dev/RltqBw/data/${user.id}"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(user.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      //logInfo(response.body);
       return Future.value(true);
     } else {
       logError("Got error code ${response.statusCode}");

@@ -24,4 +24,7 @@ class Repository {
 
   Future<bool> addUser(User user) async =>
       await _userDatatasource.addUser(user);
+
+  Future<bool> updateUser(User user) async =>
+      await _userDatatasource.updateUser(user);
 }
