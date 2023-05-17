@@ -79,7 +79,7 @@ class UserDataSource {
     }
   }
 
-  simulateProcess(String baseUrl, String token) async {
+  Future<bool> simulateProcess(String baseUrl, String token) async {
     final response = await http.get(
       Uri.parse("$baseUrl/me"),
       headers: <String, String>{
