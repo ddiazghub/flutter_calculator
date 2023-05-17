@@ -10,8 +10,7 @@ class AuthenticationController extends GetxController {
 
   Future<void> login(email, password) async {
     final AuthenticationUseCase authentication = Get.find();
-    String token = await authentication.login(email, password);
-    logInfo('Controller Login ok $token');
+    await authentication.login(email, password);
     logged.value = true;
   }
 

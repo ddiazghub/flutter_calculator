@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:loggy/loggy.dart';
-
 import '../../../domain/models/user.dart';
 import 'package:http/http.dart' as http;
 
@@ -78,6 +76,25 @@ class UserDataSource {
     } else {
       logError("Got error code ${response.statusCode}");
       return Future.value(false);
+    }
+  }
+
+  simulateProcess(String baseUrl, String token) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/me"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );
+
+    logInfo(response.statusCode);
+    if (response.statusCode == 200) {
+      logInfo('simulateProcess access ok');
+      return Future.value(true);
+    } else {
+      logError("Got error code ${response.statusCode}");
+      return Future.error('Error code ${response.statusCode}');
     }
   }
 }

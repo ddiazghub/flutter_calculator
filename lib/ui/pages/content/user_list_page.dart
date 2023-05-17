@@ -29,13 +29,17 @@ class _UserListPageState extends State<UserListPage> {
 
   @override
   Widget build(BuildContext context) {
-    UserController userController = Get.find();
     return Scaffold(
       appBar: AppBar(title: const Text("Welcome"), actions: [
         IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
               _logout();
+            }),
+        IconButton(
+            icon: const Icon(Icons.access_time),
+            onPressed: () {
+              userController.simulateProcess();
             }),
       ]),
       body: Center(child: _getXlistView()),

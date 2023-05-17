@@ -6,17 +6,24 @@ import '../models/user.dart';
 class Repository {
   late AuthenticationDatatasource _authenticationDataSource;
   late UserDataSource _userDatatasource;
+  String token = "";
+
+  // the base url of the API should end without the /
+  final String _baseUrl =
+      "http://ip172-18-0-83-chidrng1k7jg00amaprg-8000.direct.labs.play-with-docker.com";
 
   Repository() {
     _authenticationDataSource = AuthenticationDatatasource();
     _userDatatasource = UserDataSource();
   }
 
-  Future<String> login(String email, String password) async =>
-      await _authenticationDataSource.login(email, password);
+  Future<bool> login(String email, String password) async {
+    token = await _authenticationDataSource.login(_baseUrl, email, password);
+    return true;
+  }
 
   Future<bool> signUp(String email, String password) async =>
-      await _authenticationDataSource.signUp(email, password);
+      await _authenticationDataSource.signUp(_baseUrl, email, password);
 
   Future<bool> logOut() async => await _authenticationDataSource.logOut();
 
@@ -30,4 +37,7 @@ class Repository {
 
   Future<bool> deleteUser(int id) async =>
       await _userDatatasource.deleteUser(id);
+
+  Future<bool> simulateProcess() async =>
+      await _userDatatasource.simulateProcess(_baseUrl, token);
 }

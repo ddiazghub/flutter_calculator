@@ -37,4 +37,8 @@ class UserController extends GetxController {
     await userUseCase.deleteUser(id);
     getUers();
   }
+
+  void simulateProcess() async {
+    await userUseCase.simulateProcess();
+  }
 }
