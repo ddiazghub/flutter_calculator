@@ -10,5 +10,6 @@ https://retool.com/utilities/data-generator
 
 With the following structure:
 
-![image](https://github.com/augustosalazar/f_web_authentication/assets/4458129/58ac7f2f-79fc-4d3d-9474-822bea2e634a)
+![image](https://github.com/augustosalazar/f_web_authentication/assets/4458129/18254697-8d2d-412a-b7b8-a84564e2eaa4)
+
 
