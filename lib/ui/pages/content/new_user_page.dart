@@ -67,7 +67,7 @@ class _NewUserPageState extends State<NewUserPage> {
                           onPressed: () async {
                             await userController.addUser(User(
                                 email: controllerEmail.text,
-                                fistName: controllerFirstName.text,
+                                firstName: controllerFirstName.text,
                                 lastName: controllerLastName.text));
                             Get.back();
                           },

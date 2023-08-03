@@ -20,12 +20,12 @@ class _EditUserPageState extends State<EditUserPage> {
   @override
   Widget build(BuildContext context) {
     UserController userController = Get.find();
-    controllerFirstName.text = user.fistName;
+    controllerFirstName.text = user.firstName;
     controllerLastName.text = user.lastName;
     controllerEmail.text = user.email;
     return Scaffold(
       appBar: AppBar(
-        title: Text("${user.fistName} ${user.lastName}"),
+        title: Text("${user.firstName} ${user.lastName}"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -71,7 +71,7 @@ class _EditUserPageState extends State<EditUserPage> {
                             await userController.updateUser(User(
                                 id: user.id,
                                 email: controllerEmail.text,
-                                fistName: controllerFirstName.text,
+                                firstName: controllerFirstName.text,
                                 lastName: controllerLastName.text));
                             Get.back();
                           },
