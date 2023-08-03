@@ -4,9 +4,11 @@ import '../../../domain/models/user.dart';
 import 'package:http/http.dart' as http;
 
 class UserDataSource {
+  final String apiKey = 'K3bULg';
+
   Future<List<User>> getUsers() async {
     List<User> users = [];
-    var request = Uri.parse("https://retoolapi.dev/K3bULg/data")
+    var request = Uri.parse("https://retoolapi.dev/$apiKey/data")
         .resolveUri(Uri(queryParameters: {
       "format": 'json',
     }));
@@ -29,7 +31,7 @@ class UserDataSource {
     logInfo("Web service, Adding user");
 
     final response = await http.post(
-      Uri.parse("https://retoolapi.dev/K3bULg/data"),
+      Uri.parse("https://retoolapi.dev/$apiKey/data"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -47,7 +49,7 @@ class UserDataSource {
 
   Future<bool> updateUser(User user) async {
     final response = await http.put(
-      Uri.parse("https://retoolapi.dev/K3bULg/data/${user.id}"),
+      Uri.parse("https://retoolapi.dev/$apiKey/data/${user.id}"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -65,7 +67,7 @@ class UserDataSource {
 
   Future<bool> deleteUser(int id) async {
     final response = await http.delete(
-      Uri.parse("https://retoolapi.dev/K3bULg/data/$id"),
+      Uri.parse("https://retoolapi.dev/$apiKey/data/$id"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
