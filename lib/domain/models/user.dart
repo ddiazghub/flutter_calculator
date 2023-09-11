@@ -17,14 +17,14 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
-        firstName: json["firstName"] ?? "somefirstname",
+        firstName: json["firstName"] ?? "somefirstName",
         lastName: json["lastName"] ?? "someLastName",
         email: json["email"] ?? "someemail",
       );
 
   Map<String, dynamic> toJson() => {
         "id": id ?? 0,
-        "firstname": firstName,
+        "firstName": firstName,
         "lastName": lastName,
         "email": email,
       };

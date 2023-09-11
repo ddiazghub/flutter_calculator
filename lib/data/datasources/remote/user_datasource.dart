@@ -4,7 +4,7 @@ import '../../../domain/models/user.dart';
 import 'package:http/http.dart' as http;
 
 class UserDataSource {
-  final String apiKey = '1GUuUT';
+  final String apiKey = 'W4uoN7';
 
   Future<List<User>> getUsers() async {
     List<User> users = [];
@@ -22,6 +22,7 @@ class UserDataSource {
       users = List<User>.from(data.map((x) => User.fromJson(x)));
     } else {
       logError("Got error code ${response.statusCode}");
+      return Future.error('Error code ${response.statusCode}');
     }
 
     return Future.value(users);
