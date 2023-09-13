@@ -6,16 +6,17 @@ class AuthenticationDatatasource {
   Future<String> login(String baseUrl, String email, String password) async {
     final response = await http.post(
       Uri.parse("$baseUrl/login"),
-      headers: <String, String>{
+      headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode({
         "username": email,
         "password": password,
       }),
     );
 
     logInfo(response.statusCode);
+
     if (response.statusCode == 200) {
       logInfo(response.body);
       final data = jsonDecode(response.body);
@@ -41,6 +42,7 @@ class AuthenticationDatatasource {
     );
 
     logInfo(response.statusCode);
+
     if (response.statusCode == 200) {
       //logInfo(response.body);
       return Future.value(true);

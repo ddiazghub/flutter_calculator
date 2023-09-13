@@ -8,6 +8,7 @@ class UserDataSource {
 
   Future<List<User>> getUsers() async {
     List<User> users = [];
+
     var request = Uri.parse("https://retoolapi.dev/$apiKey/data")
         .resolveUri(Uri(queryParameters: {
       "format": 'json',
@@ -93,6 +94,7 @@ class UserDataSource {
     );
 
     logInfo(response.statusCode);
+
     if (response.statusCode == 200) {
       logInfo('simulateProcess access ok');
       return Future.value(true);
