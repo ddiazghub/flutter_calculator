@@ -1,4 +1,4 @@
-# f_web_authentication
+# Flutter calculator
 
 A Flutter proyect to test authentication services based on a sever running the following code:
 
