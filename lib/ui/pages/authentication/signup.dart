@@ -1,3 +1,4 @@
+import 'package:f_web_authentication/ui/central.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
@@ -19,13 +20,7 @@ class _FirebaseSignUpState extends State<SignUp> {
   _signup(theEmail, thePassword) async {
     try {
       await authenticationController.signUp(theEmail, thePassword);
-
-      Get.snackbar(
-        "Sign Up",
-        'OK',
-        icon: const Icon(Icons.person, color: Colors.red),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.off(() => const Central());
     } catch (err) {
       logError('SignUp error $err');
       Get.snackbar(
