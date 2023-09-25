@@ -15,6 +15,9 @@ class _NewUserPageState extends State<NewUserPage> {
   final controllerFirstName = TextEditingController();
   final controllerLastName = TextEditingController();
   final controllerEmail = TextEditingController();
+  final controllerSchool = TextEditingController();
+  final controllerGrade = TextEditingController();
+  final controllerBirth = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +55,18 @@ class _NewUserPageState extends State<NewUserPage> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   labelText: 'Email',
+                )),
+            TextField(
+                controller: controllerSchool,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'School',
+                )),
+            TextField(
+                controller: controllerGrade,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Grade',
                 )),
             const SizedBox(
               height: 20,
