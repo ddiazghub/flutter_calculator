@@ -50,10 +50,10 @@ class HomePage extends StatelessWidget {
 
   List<Widget> renderButtons(BuildContext context) {
     final buttons = Iterable.generate(
-      10,
+      9,
       (i) => ElevatedButton(
-        child: Text(i.toString()),
-        onPressed: () => calculator.pushInput(i),
+        child: Text((i + 1).toString()),
+        onPressed: () => calculator.pushInput((i + 1)),
       ),
     ).toList();
 
@@ -105,7 +105,11 @@ class HomePage extends StatelessWidget {
 
           calculator.clearInput();
         },
-      )
+      ),
+      ElevatedButton(
+        child: const Text("0"),
+        onPressed: () => calculator.pushInput(0),
+      ),
     ]);
 
     return buttons;
