@@ -8,7 +8,6 @@ class HomePage extends StatelessWidget {
 
   final AuthenticationController auth = Get.find();
   final CalculatorController calculator = Get.find();
-  //final TimeDisplayController timer = Get.find();
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackbar(
       BuildContext context, String text, Color color) {
