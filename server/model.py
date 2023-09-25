@@ -23,7 +23,7 @@ class DisplayUser(CamelModel):
     email: str
     first_name: str
     last_name: str
-    birthday: datetime
+    birthday: str
     school: str
     grade: int
     difficulty: int
