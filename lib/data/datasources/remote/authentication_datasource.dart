@@ -33,7 +33,8 @@ class AuthenticationDatatasource {
   }
 
   Future<User> signUp(String baseUrl, User user, String password) async {
-    logInfo("alkjhrfalfhjalfsl");
+    logInfo(jsonEncode(user.toJsonWithPassword(password)));
+
     final response = await http.post(
       Uri.parse("$baseUrl/register"),
       headers: <String, String>{

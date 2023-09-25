@@ -25,14 +25,20 @@ class DisplayUser(CamelModel):
     last_name: str
     birthday: str
     school: str
-    grade: int
+    grade: str
     difficulty: int
 
     @staticmethod
     def from_user(user: User) -> DisplayUser:
-        user_dict = user.model_dump(exclude={"password"})
-
-        return DisplayUser(**user_dict)
+        return DisplayUser(
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            birthday=user.birthday,
+            school=user.school,
+            grade=user.grade,
+            difficulty=user.difficulty,
+        )
 
 
 class RefreshScheme(CamelModel):
