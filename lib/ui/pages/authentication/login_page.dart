@@ -1,3 +1,4 @@
+import 'package:f_web_authentication/domain/models/credentials.dart';
 import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,10 +19,10 @@ class _LoginPageState extends State<LoginPage> {
   final controllerPassword = TextEditingController(text: '123456');
   AuthenticationController authenticationController = Get.find();
 
-  _login(theEmail, thePassword) async {
+  Future<void> _login(String theEmail, String thePassword) async {
     logInfo('_login $theEmail $thePassword');
     try {
-      await authenticationController.login(theEmail, thePassword);
+      await authenticationController.login(Credentials(theEmail, thePassword));
     } catch (err) {
       Get.snackbar(
         "Login",

@@ -1,3 +1,4 @@
+import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/ui/central.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,16 +15,18 @@ class SignUp extends StatefulWidget {
 
 class _FirebaseSignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
+  final controllerFirstName = TextEditingController(text: 'pepito');
+  final controllerLastName = TextEditingController(text: 'perez');
   final controllerEmail = TextEditingController(text: 'a@a.com');
   final controllerPassword = TextEditingController(text: '123456');
   final controllerSchool = TextEditingController(text: 'Royal school');
   final controllerGrade = TextEditingController(text: '11');
-  final controllerBirth = TextEditingController(text: '1/1/2000');
+  final controllerBirth = TextEditingController(text: '2000-1-1');
   AuthenticationController authenticationController = Get.find();
 
-  _signup(theEmail, thePassword) async {
+  Future<void> _signup(User user, String password) async {
     try {
-      await authenticationController.signUp(theEmail, thePassword);
+      await authenticationController.signUp(user, password);
       Get.off(() => const Central());
     } catch (err) {
       logError('SignUp error $err');
@@ -61,102 +64,138 @@ class _FirebaseSignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(20),
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Sign Up Information",
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.emailAddress,
-                          controller: controllerEmail,
-                          decoration:
-                              const InputDecoration(labelText: "Email address"),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              logError('SignUp validation empty email');
-                              return "Enter email";
-                            } else if (!value.contains('@')) {
-                              logError('SignUp validation invalid email');
-                              return "Enter valid email address";
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        TextFormField(
-                          controller: controllerPassword,
-                          decoration:
-                              const InputDecoration(labelText: "Password"),
-                          keyboardType: TextInputType.number,
-                          obscureText: true,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Enter password";
-                            } else if (value.length < 6) {
-                              return "Password should have at least 6 characters";
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormField(
-                          controller: controllerSchool,
-                          decoration:
-                              const InputDecoration(labelText: "School"),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              logError('SignUp validation empty School');
-                              return "Enter School";
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormField(
-                          controller: controllerGrade,
-                          decoration: const InputDecoration(labelText: "Grade"),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              logError('SignUp validation empty Grade');
-                              return "Enter Grade";
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormField(
-                          controller: controllerBirth,
-                          decoration: InputDecoration(
-                            labelText: 'Select a date',
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.calendar_today),
-                              onPressed: () => _selectDate(context),
-                            ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Sign Up Information",
+                            style: TextStyle(fontSize: 20),
                           ),
-                          readOnly: true,
-                          onTap: () => _selectDate(
-                              context), // Open the date picker when the field is tapped
-                        ),
-                        TextButton(
-                            onPressed: () async {
-                              final form = _formKey.currentState;
-                              form!.save();
-                              // this line dismiss the keyboard by taking away the focus of the TextFormField and giving it to an unused
-                              FocusScope.of(context).requestFocus(FocusNode());
-                              if (_formKey.currentState!.validate()) {
-                                logInfo('SignUp validation form ok');
-                                await _signup(controllerEmail.text,
-                                    controllerPassword.text);
-                              } else {
-                                logError('SignUp validation form nok');
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            controller: controllerEmail,
+                            decoration:
+                                const InputDecoration(labelText: "Email address"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                logError('SignUp validation empty email');
+                                return "Enter email";
+                              } else if (!value.contains('@')) {
+                                logError('SignUp validation invalid email');
+                                return "Enter valid email address";
                               }
+                              return null;
                             },
-                            child: const Text("Submit")),
-                      ]),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: controllerPassword,
+                            decoration:
+                                const InputDecoration(labelText: "Password"),
+                            keyboardType: TextInputType.number,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter password";
+                              } else if (value.length < 6) {
+                                return "Password should have at least 6 characters";
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            controller: controllerFirstName,
+                            decoration:
+                                const InputDecoration(labelText: "First Name"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                logError('SignUp validation empty first name');
+                                return "Enter name";
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            controller: controllerLastName,
+                            decoration:
+                                const InputDecoration(labelText: "Last Name"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                logError('SignUp validation empty last name');
+                                return "Enter last name";
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            controller: controllerSchool,
+                            decoration:
+                                const InputDecoration(labelText: "School"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                logError('SignUp validation empty School');
+                                return "Enter School";
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            controller: controllerGrade,
+                            decoration: const InputDecoration(labelText: "Grade"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                logError('SignUp validation empty Grade');
+                                return "Enter Grade";
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            controller: controllerBirth,
+                            decoration: InputDecoration(
+                              labelText: 'Select a date',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.calendar_today),
+                                onPressed: () => _selectDate(context),
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () => _selectDate(
+                                context), // Open the date picker when the field is tapped
+                          ),
+                          TextButton(
+                              onPressed: () async {
+                                final form = _formKey.currentState;
+                                form!.save();
+                                // this line dismiss the keyboard by taking away the focus of the TextFormField and giving it to an unused
+                                FocusScope.of(context).requestFocus(FocusNode());
+                                if (_formKey.currentState!.validate()) {
+                                  logInfo('SignUp validation form ok');
+
+                                  final user = User(
+                                    controllerEmail.text,
+                                    controllerFirstName.text,
+                                    controllerLastName.text,
+                                    controllerBirth.text,
+                                    controllerSchool.text,
+                                    controllerGrade.text,
+                                    0,
+                                  );
+                                  
+                                  await _signup(user, controllerPassword.text);
+                                } else {
+                                  logError('SignUp validation form nok');
+                                }
+                              },
+                              child: const Text("Submit")),
+                        ]),
+                  ),
                 ))));
   }
 }

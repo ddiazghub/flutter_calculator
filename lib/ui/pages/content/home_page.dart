@@ -25,8 +25,8 @@ class HomePage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Datos de Usuario'),
-          content: Column(
+          title: const Text('Datos de Usuario'),
+          content: const Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
           ),
           actions: [
             ElevatedButton(
-              child: Text('Close'),
+              child: const Text('Close'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the pop-up
               },
@@ -148,7 +148,7 @@ class HomePage extends StatelessWidget {
                             fontSize: 20,
                           ),
                           key: const Key('TextHomeHello'),
-                          "Hello ${auth.credentials!.email}",
+                          "Hello ${auth.user!.email}",
                         ),
                       ),
                     ),

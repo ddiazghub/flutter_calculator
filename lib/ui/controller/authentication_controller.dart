@@ -1,4 +1,5 @@
 import 'package:f_web_authentication/domain/models/credentials.dart';
+import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/domain/use_case/authentication_usecase.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:get/get.dart';
@@ -6,31 +7,31 @@ import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
 class AuthenticationController extends GetxController {
-  final Rxn<Credentials> _credentials = Rxn();
+  final Rxn<User> _user = Rxn();
 
-  bool get isLogged => _credentials.value != null;
-  Credentials? get credentials => _credentials.value;
+  bool get isLogged => _user.value != null;
+  User? get user => _user.value;
 
-  void doLogin(String email, String password) {
-    _credentials.value = Credentials(email, password);
+  void doLogin(User user) {
+    _user.value = user;
     CalculatorController calculator = Get.find();
-    calculator.reset(0);
+    calculator.reset(user.difficulty);
   }
 
-  Future<void> login(email, password) async {
+  Future<void> login(Credentials credentials) async {
     final AuthenticationUseCase authentication = Get.find();
-    await authentication.login(email, password);
-    doLogin(email, password);
+    final user = await authentication.login(credentials);
+    doLogin(user);
   }
 
-  Future<bool> signUp(email, password) async {
+  Future<bool> signUp(User user, String password) async {
     final AuthenticationUseCase authentication = Get.find();
     logInfo('Controller Sign Up');
-    await authentication.signUp(email, password);
-    doLogin(email, password);
+    final newUser = await authentication.signUp(user, password);
+    doLogin(newUser);
 
     return true;
   }
 
-  Future<void> logOut() async => _credentials.value = null;
+  Future<void> logOut() async => _user.value = null;
 }
