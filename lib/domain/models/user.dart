@@ -21,8 +21,8 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         json["email"] ?? "someemail",
-        json["firstName"] ?? "somefirstName",
-        json["lastName"] ?? "someLastName",
+        json["first_name"] ?? "somefirstName",
+        json["last_name"] ?? "someLastName",
         json["birthday"] ?? "2000-1-1",
         json["school"] ?? "someschool",
         json["grade"] ?? "first grade",
@@ -31,8 +31,8 @@ class User {
 
   Map<String, dynamic> toJson() => {
         "email": email,
-        "firstName": firstName,
-        "lastName": lastName,
+        "first_name": firstName,
+        "last_name": lastName,
         "birthday": birthday,
         "school": school,
         "grade": grade,
@@ -52,4 +52,8 @@ class UserWithToken {
   final User user;
 
   UserWithToken(this.token, this.user);
+
+  factory UserWithToken.fromJson(Map<String, dynamic> json) {
+    return UserWithToken(json["access_token"], User.fromJson(json["user"]));
+  }
 }

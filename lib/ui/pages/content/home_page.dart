@@ -26,13 +26,13 @@ class HomePage extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Datos de Usuario'),
-          content: const Column(
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Usuario: X'),
-              Text('Colegio: Y'),
-              Text('Grado: 3'),
+              Text('Email: ${auth.user!.email}'),
+              Text('Colegio: ${auth.user!.school}'),
+              Text('Grado: ${auth.user!.grade}'),
             ],
           ),
           actions: [

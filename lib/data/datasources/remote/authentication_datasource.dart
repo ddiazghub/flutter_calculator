@@ -11,7 +11,7 @@ class AuthenticationDatatasource {
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: credentials.toJson(),
+      body: jsonEncode(credentials.toJson()),
     );
 
     logInfo(response.statusCode);
@@ -32,9 +32,7 @@ class AuthenticationDatatasource {
     }
   }
 
-  Future<User> signUp(String baseUrl, User user, String password) async {
-    logInfo(jsonEncode(user.toJsonWithPassword(password)));
-
+  Future<UserWithToken> signUp(String baseUrl, User user, String password) async {
     final response = await http.post(
       Uri.parse("$baseUrl/register"),
       headers: <String, String>{
@@ -43,11 +41,11 @@ class AuthenticationDatatasource {
       body: jsonEncode(user.toJsonWithPassword(password)),
     );
 
-    logInfo("ghdhgdjfkj");
     logInfo(response.statusCode);
 
     if (response.statusCode == 200) {
-      final user = User.fromJson(jsonDecode(response.body));
+      logInfo(jsonDecode(response.body));
+      final user = UserWithToken.fromJson(jsonDecode(response.body));
 
       return Future.value(user);
     } else {
@@ -58,5 +56,24 @@ class AuthenticationDatatasource {
 
   Future<bool> logOut() async {
     return Future.value(true);
+  }
+
+  Future<bool> levelUp(String baseUrl, String token, int difficulty) async {
+    final response = await http.patch(
+      Uri.parse("$baseUrl/levelup?difficulty=$difficulty"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );
+
+    logInfo(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return Future.value(true);
+    } else {
+      logError(response.body);
+      return Future.error('Error code ${response.statusCode}');
+    }
   }
 }

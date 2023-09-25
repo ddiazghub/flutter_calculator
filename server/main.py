@@ -3,7 +3,7 @@ from typing import Annotated, List
 
 import jwt
 from fastapi import FastAPI, Header, HTTPException
-from model import DisplayUser, LoginSchema, User, RefreshScheme
+from model import DisplayUser, LoggedUser, LoginSchema, User, RefreshScheme
 
 app = FastAPI()
 
@@ -13,14 +13,15 @@ users_db: List[User] = []
 
 # Define an endpoint to register a user
 @app.post("/register")
-async def register(data: User) -> DisplayUser:
+async def register(data: User) -> LoggedUser:
     for user in users_db:
         if user.email == data.email:
             raise HTTPException(status_code=400, detail="Username already registered")
 
     users_db.append(data)
 
-    return DisplayUser.from_user(data)
+    return do_login(data)
+
 
 # Define an endpoint to list all users
 @app.get("/users")
@@ -44,7 +45,7 @@ REFRESH_TOKEN_EXPIRE_MINUTES = 1440
 
 
 # Define a function to authenticate a user with a given username and password
-def authenticate_user(username: str, password: str):
+def authenticate_user(username: str, password: str) -> User:
     for user in users_db:
         if user.email == username:
             if user.password == password:
@@ -57,10 +58,7 @@ def authenticate_user(username: str, password: str):
     raise HTTPException(status_code=401, detail="Invalid username or password")
 
 
-# Define an endpoint to create a new access token and refresh token
-@app.post("/login")
-async def login(data: LoginSchema):
-    user = authenticate_user(data.email, data.password)
+def do_login(user: User) -> LoggedUser:
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
 
@@ -76,12 +74,20 @@ async def login(data: LoginSchema):
         algorithm=JWT_ALGORITHM,
     )
 
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
-        "user": user.model_dump(exclude={"password"})
-    }
+    return LoggedUser(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        token_type="bearer",
+        user=DisplayUser.from_user(user),
+    )
+
+
+# Define an endpoint to create a new access token and refresh token
+@app.post("/login")
+async def login(data: LoginSchema):
+    user = authenticate_user(data.email, data.password)
+
+    return do_login(user)
 
 
 # Gets the currently logged in user
@@ -106,7 +112,9 @@ def current_user(authorization: Annotated[str | None, Header()] = None) -> User:
 
 # Sets a new base difficulty for the user
 @app.patch("/levelup")
-async def levelup(difficulty: int, authorization: Annotated[str | None, Header()] = None) -> DisplayUser:
+async def levelup(
+    difficulty: int, authorization: Annotated[str | None, Header()] = None
+) -> DisplayUser:
     user = current_user(authorization)
     user.difficulty = difficulty
 

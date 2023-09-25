@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:f_web_authentication/domain/models/session.dart';
+import 'package:f_web_authentication/domain/use_case/authentication_usecase.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
@@ -13,6 +14,8 @@ class CalculatorController extends GetxController {
   final second = 0.obs;
   final session = Session();
   final input = <int>[].obs;
+
+  final AuthenticationUseCase auth = Get.find();
 
   CalculatorController() {
     reset(0);
@@ -27,9 +30,9 @@ class CalculatorController extends GetxController {
   }
 
   int inputtedAnswer() => input.reversed.indexed.fold(
-    0,
-    (acc, pair) => acc + pair.$2 * pow(10, pair.$1) as int,
-  );
+        0,
+        (acc, pair) => acc + pair.$2 * pow(10, pair.$1) as int,
+      );
 
   void pushInput(int digit) {
     if (input.isEmpty && digit == 0) {
@@ -49,6 +52,12 @@ class CalculatorController extends GetxController {
     input.clear();
   }
 
+  void sessionReset() {
+    auth.levelUp(difficulty.value);
+    next();
+    session.reset();
+  }
+
   AnswerResult submit() {
     int answer = inputtedAnswer();
 
@@ -65,14 +74,12 @@ class CalculatorController extends GetxController {
       if (difficulty < 5) {
         if (session.correct > 4 && session.elapsed < const Duration(seconds: 40)) {
           difficulty.value++;
-          next();
-          session.reset();
+          sessionReset();
 
           return AnswerResult.LevelUp;
         }
 
-        next();
-        session.reset();
+        sessionReset();
 
         return AnswerResult.SessionReset;
       }

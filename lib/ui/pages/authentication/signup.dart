@@ -25,18 +25,18 @@ class _FirebaseSignUpState extends State<SignUp> {
   AuthenticationController authenticationController = Get.find();
 
   Future<void> _signup(User user, String password) async {
-    try {
+    //try {
       await authenticationController.signUp(user, password);
       Get.off(() => const Central());
-    } catch (err) {
-      logError('SignUp error $err');
-      Get.snackbar(
-        "Sign Up",
-        err.toString(),
-        icon: const Icon(Icons.person, color: Colors.red),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+    //} catch (err) {
+    //  logError('SignUp error $err');
+    //  Get.snackbar(
+    //    "Sign Up",
+    //    err.toString(),
+    //    icon: const Icon(Icons.person, color: Colors.red),
+    //    snackPosition: SnackPosition.BOTTOM,
+    //  );
+    //}
   }
 
   Future<void> _selectDate(BuildContext context) async {

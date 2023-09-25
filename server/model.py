@@ -1,9 +1,8 @@
 from __future__ import annotations
-from datetime import datetime
-from fastapi_camelcase import CamelModel
+from pydantic import BaseModel
 
 
-class User(CamelModel):
+class User(BaseModel):
     email: str
     first_name: str
     last_name: str
@@ -14,12 +13,12 @@ class User(CamelModel):
     difficulty: int = 0
 
 
-class LoginSchema(CamelModel):
+class LoginSchema(BaseModel):
     email: str
     password: str
 
 
-class DisplayUser(CamelModel):
+class DisplayUser(BaseModel):
     email: str
     first_name: str
     last_name: str
@@ -30,16 +29,15 @@ class DisplayUser(CamelModel):
 
     @staticmethod
     def from_user(user: User) -> DisplayUser:
-        return DisplayUser(
-            email=user.email,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            birthday=user.birthday,
-            school=user.school,
-            grade=user.grade,
-            difficulty=user.difficulty,
-        )
+        return DisplayUser(**user.model_dump(exclude={"password"}))
 
 
-class RefreshScheme(CamelModel):
+class LoggedUser(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str
+    user: DisplayUser
+
+
+class RefreshScheme(BaseModel):
     refresh_token: str

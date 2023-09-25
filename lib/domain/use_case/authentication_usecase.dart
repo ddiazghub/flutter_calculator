@@ -13,4 +13,6 @@ class AuthenticationUseCase {
       await _repository.signUp(user, password);
 
   Future<bool> logOut() async => await _repository.logOut();
+
+  Future<bool> levelUp(int difficulty) async => await _repository.levelUp(difficulty);
 }
