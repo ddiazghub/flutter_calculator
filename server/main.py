@@ -15,7 +15,7 @@ users_db: List[User] = []
 @app.post("/register")
 async def register(data: User) -> DisplayUser:
     for user in users_db:
-        if user.username == data.username:
+        if user.email == data.email:
             raise HTTPException(status_code=400, detail="Username already registered")
 
     users_db.append(data)
@@ -46,7 +46,7 @@ REFRESH_TOKEN_EXPIRE_MINUTES = 1440
 # Define a function to authenticate a user with a given username and password
 def authenticate_user(username: str, password: str):
     for user in users_db:
-        if user.username == username:
+        if user.email == username:
             if user.password == password:
                 return user
             else:
@@ -60,18 +60,18 @@ def authenticate_user(username: str, password: str):
 # Define an endpoint to create a new access token and refresh token
 @app.post("/login")
 async def login(data: LoginSchema):
-    user = authenticate_user(data.username, data.password)
+    user = authenticate_user(data.email, data.password)
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
 
     access_token = jwt.encode(
-        {"sub": user.username, "exp": datetime.utcnow() + access_token_expires},
+        {"sub": user.email, "exp": datetime.utcnow() + access_token_expires},
         JWT_SECRET,
         algorithm=JWT_ALGORITHM,
     )
 
     refresh_token = jwt.encode(
-        {"sub": user.username, "exp": datetime.utcnow() + refresh_token_expires},
+        {"sub": user.email, "exp": datetime.utcnow() + refresh_token_expires},
         JWT_SECRET,
         algorithm=JWT_ALGORITHM,
     )
@@ -94,7 +94,7 @@ def current_user(authorization: Annotated[str | None, Header()] = None) -> User:
         username = decoded_token["sub"]
 
         for user in users_db:
-            if user.username == username:
+            if user.email == username:
                 return user
 
         raise HTTPException(status_code=401, detail="User does not exist")

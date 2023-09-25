@@ -1,10 +1,10 @@
 from __future__ import annotations
 from datetime import datetime
-from pydantic import BaseModel
+from fastapi_camelcase import CamelModel
 
 
-class User(BaseModel):
-    username: str
+class User(CamelModel):
+    email: str
     first_name: str
     last_name: str
     password: str
@@ -14,13 +14,13 @@ class User(BaseModel):
     difficulty: int = 0
 
 
-class LoginSchema(BaseModel):
-    username: str
+class LoginSchema(CamelModel):
+    email: str
     password: str
 
 
-class DisplayUser(BaseModel):
-    username: str
+class DisplayUser(CamelModel):
+    email: str
     first_name: str
     last_name: str
     birthday: datetime
@@ -35,5 +35,5 @@ class DisplayUser(BaseModel):
         return DisplayUser(**user_dict)
 
 
-class RefreshScheme(BaseModel):
+class RefreshScheme(CamelModel):
     refresh_token: str
