@@ -21,6 +21,34 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  void _showPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Datos de Usuario'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Usuario: X'),
+              Text('Colegio: Y'),
+              Text('Grado: 3'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the pop-up
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   List<Widget> renderButtons(BuildContext context) {
     final buttons = Iterable.generate(
       10,
@@ -94,6 +122,13 @@ class HomePage extends StatelessWidget {
             key: const Key('ButtonHomeLogOff'),
             onPressed: () => auth.logOut(),
             icon: const Icon(Icons.logout),
+          ),
+          IconButton(
+            key: const Key('ButtonHomeUsser'),
+            onPressed: () {
+              _showPopup(context);
+            },
+            icon: const Icon(Icons.person_2_outlined),
           )
         ],
       ),

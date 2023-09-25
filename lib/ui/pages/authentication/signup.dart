@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 import '../../controller/authentication_controller.dart';
+import 'package:intl/intl.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -15,6 +16,9 @@ class _FirebaseSignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   final controllerEmail = TextEditingController(text: 'a@a.com');
   final controllerPassword = TextEditingController(text: '123456');
+  final controllerSchool = TextEditingController(text: 'Royal school');
+  final controllerGrade = TextEditingController(text: '11');
+  final controllerBirth = TextEditingController(text: '1/1/2000');
   AuthenticationController authenticationController = Get.find();
 
   _signup(theEmail, thePassword) async {
@@ -29,6 +33,22 @@ class _FirebaseSignUpState extends State<SignUp> {
         icon: const Icon(Icons.person, color: Colors.red),
         snackPosition: SnackPosition.BOTTOM,
       );
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != DateTime.now()) {
+      final formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      setState(() {
+        controllerBirth.text = formattedDate
+            .toString(); // Store the selected date in the controller
+      });
     }
   }
 
@@ -85,8 +105,41 @@ class _FirebaseSignUpState extends State<SignUp> {
                             return null;
                           },
                         ),
-                        const SizedBox(
-                          height: 20,
+                        TextFormField(
+                          controller: controllerSchool,
+                          decoration:
+                              const InputDecoration(labelText: "School"),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              logError('SignUp validation empty School');
+                              return "Enter School";
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: controllerGrade,
+                          decoration: const InputDecoration(labelText: "Grade"),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              logError('SignUp validation empty Grade');
+                              return "Enter Grade";
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: controllerBirth,
+                          decoration: InputDecoration(
+                            labelText: 'Select a date',
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.calendar_today),
+                              onPressed: () => _selectDate(context),
+                            ),
+                          ),
+                          readOnly: true,
+                          onTap: () => _selectDate(
+                              context), // Open the date picker when the field is tapped
                         ),
                         TextButton(
                             onPressed: () async {
