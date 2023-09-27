@@ -9,6 +9,10 @@ import 'signup.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
+  static const CREATE_BUTTON = Key("CreateAccountButton");
+  static const EMAIL = Key("LoginEmailField");
+  static const SUBMIT = Key("LoginSubmitField");
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -55,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   TextFormField(
+                    key: LoginPage.EMAIL,
                     keyboardType: TextInputType.emailAddress,
                     controller: controllerEmail,
                     decoration:
@@ -89,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   OutlinedButton(
+                    key: LoginPage.SUBMIT,
                     onPressed: () async {
                       // this line dismiss the keyboard by taking away the focus of the TextFormField and giving it to an unused
                       FocusScope.of(context).requestFocus(FocusNode());
@@ -107,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             TextButton(
+              key: LoginPage.CREATE_BUTTON,
               onPressed: () => Get.to(() => const SignUp()),
               child: const Text("Create account"),
             )

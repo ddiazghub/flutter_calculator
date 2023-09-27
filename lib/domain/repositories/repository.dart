@@ -8,7 +8,7 @@ class Repository {
   String token = "";
 
   // the base url of the API should end without the /
-  final String _baseUrl = "http://192.168.1.3:8000";
+  final String _baseUrl = "http://ip172-18-0-79-cka48oksnmng00dvqdag-8000.direct.labs.play-with-docker.com";
 
   Repository() {
     _authenticationDataSource = AuthenticationDatatasource();
