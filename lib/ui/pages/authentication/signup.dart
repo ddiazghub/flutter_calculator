@@ -9,15 +9,6 @@ import 'package:intl/intl.dart';
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
-  static const EMAIL = Key("EmailField");
-  static const PASSWORD = Key("PasswordField");
-  static const FIRST_NAME = Key("FirstName");
-  static const LAST_NAME = Key("LastName");
-  static const SCHOOL = Key("School");
-  static const GRADE = Key("Grade");
-  static const BIRTHDAY = Key("Birthday");
-  static const SUBMIT = Key("SignUpSubmitButton");
-
   @override
   State<SignUp> createState() => _FirebaseSignUpState();
 }
@@ -33,19 +24,28 @@ class _FirebaseSignUpState extends State<SignUp> {
   final controllerBirth = TextEditingController(text: '2000-1-1');
   AuthenticationController authenticationController = Get.find();
 
+  final emailKey = const Key("SEK");
+  final passKey = const Key("SPK");
+  final fnkey = const Key("FNK");
+  final lnkey = const Key("LNK");
+  final schoolkey = const Key("SK");
+  final gradekey = const Key("GK");
+  final birthkey = const Key("BK");
+  final subkey = const Key("SubK");
+
   Future<void> _signup(User user, String password) async {
-    try {
-      await authenticationController.signUp(user, password);
-      Get.off(() => const Central());
-    } catch (err) {
-      logError('SignUp error $err');
-      Get.snackbar(
-        "Sign Up",
-        err.toString(),
-        icon: const Icon(Icons.person, color: Colors.red),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+    //try {
+    await authenticationController.signUp(user, password);
+    Get.off(() => const Central());
+    //} catch (err) {
+    //  logError('SignUp error $err');
+    //  Get.snackbar(
+    //    "Sign Up",
+    //    err.toString(),
+    //    icon: const Icon(Icons.person, color: Colors.red),
+    //    snackPosition: SnackPosition.BOTTOM,
+    //  );
+    //}
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -85,7 +85,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                             height: 20,
                           ),
                           TextFormField(
-                            key: SignUp.EMAIL,
+                            key: emailKey,
                             keyboardType: TextInputType.emailAddress,
                             controller: controllerEmail,
                             decoration: const InputDecoration(
@@ -105,7 +105,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                             height: 20,
                           ),
                           TextFormField(
-                            key: SignUp.PASSWORD,
+                            key: passKey,
                             controller: controllerPassword,
                             decoration:
                                 const InputDecoration(labelText: "Password"),
@@ -121,7 +121,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                             },
                           ),
                           TextFormField(
-                            key: SignUp.FIRST_NAME,
+                            key: fnkey,
                             controller: controllerFirstName,
                             decoration:
                                 const InputDecoration(labelText: "First Name"),
@@ -134,7 +134,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                             },
                           ),
                           TextFormField(
-                            key: SignUp.LAST_NAME,
+                            key: lnkey,
                             controller: controllerLastName,
                             decoration:
                                 const InputDecoration(labelText: "Last Name"),
@@ -147,7 +147,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                             },
                           ),
                           TextFormField(
-                            key: SignUp.SCHOOL,
+                            key: schoolkey,
                             controller: controllerSchool,
                             decoration:
                                 const InputDecoration(labelText: "School"),
@@ -160,7 +160,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                             },
                           ),
                           TextFormField(
-                            key: SignUp.GRADE,
+                            key: gradekey,
                             controller: controllerGrade,
                             decoration:
                                 const InputDecoration(labelText: "Grade"),
@@ -173,7 +173,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                             },
                           ),
                           TextFormField(
-                            key: SignUp.BIRTHDAY,
+                            key: birthkey,
                             controller: controllerBirth,
                             decoration: InputDecoration(
                               labelText: 'Select a date',
@@ -187,7 +187,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                                 context), // Open the date picker when the field is tapped
                           ),
                           TextButton(
-                              key: SignUp.SUBMIT,
+                              key: subkey,
                               onPressed: () async {
                                 final form = _formKey.currentState;
                                 form!.save();

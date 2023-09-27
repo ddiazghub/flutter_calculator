@@ -8,7 +8,8 @@ class Repository {
   String token = "";
 
   // the base url of the API should end without the /
-  final String _baseUrl = "http://ip172-18-0-79-cka48oksnmng00dvqdag-8000.direct.labs.play-with-docker.com";
+  final String _baseUrl =
+      "http://ip172-18-0-79-cka48oksnmng00dvqdag-8000.direct.labs.play-with-docker.com/";
 
   Repository() {
     _authenticationDataSource = AuthenticationDatatasource();
@@ -22,7 +23,8 @@ class Repository {
   }
 
   Future<User> signUp(User user, String password) async {
-    final data = await _authenticationDataSource.signUp(_baseUrl, user, password);
+    final data =
+        await _authenticationDataSource.signUp(_baseUrl, user, password);
     token = data.token;
 
     return data.user;
@@ -30,5 +32,6 @@ class Repository {
 
   Future<bool> logOut() async => await _authenticationDataSource.logOut();
 
-  Future<bool> levelUp(int difficulty) async => await _authenticationDataSource.levelUp(_baseUrl, token, difficulty);
+  Future<bool> levelUp(int difficulty) async =>
+      await _authenticationDataSource.levelUp(_baseUrl, token, difficulty);
 }

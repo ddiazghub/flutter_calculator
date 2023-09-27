@@ -9,15 +9,13 @@ import 'signup.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
-  static const CREATE_BUTTON = Key("CreateAccountButton");
-  static const EMAIL = Key("LoginEmailField");
-  static const SUBMIT = Key("LoginSubmitField");
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final emailKey = const Key("TextFieldLEmail");
+
   final _formKey = GlobalKey<FormState>();
   final controllerEmail = TextEditingController(text: 'a@a.com');
   final controllerPassword = TextEditingController(text: '123456');
@@ -59,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   TextFormField(
-                    key: LoginPage.EMAIL,
+                    key: emailKey,
                     keyboardType: TextInputType.emailAddress,
                     controller: controllerEmail,
                     decoration:
@@ -77,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   TextFormField(
+                    key: const Key("TextFieldLPassword"),
                     controller: controllerPassword,
                     decoration: const InputDecoration(labelText: "Password"),
                     keyboardType: TextInputType.number,
@@ -94,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   OutlinedButton(
-                    key: LoginPage.SUBMIT,
+                    key: const Key("ButtonLoginSubmit"),
                     onPressed: () async {
                       // this line dismiss the keyboard by taking away the focus of the TextFormField and giving it to an unused
                       FocusScope.of(context).requestFocus(FocusNode());
@@ -113,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             TextButton(
-              key: LoginPage.CREATE_BUTTON,
+              key: const Key("ButtonSignUp"),
               onPressed: () => Get.to(() => const SignUp()),
               child: const Text("Create account"),
             )

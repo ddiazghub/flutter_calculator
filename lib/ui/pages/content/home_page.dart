@@ -6,8 +6,6 @@ import 'package:get/get.dart';
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
 
-  static const LOGOUT = Key('ButtonHomeLogOff');
-
   final AuthenticationController auth = Get.find();
   final CalculatorController calculator = Get.find();
 
@@ -61,10 +59,6 @@ class HomePage extends StatelessWidget {
 
     buttons.addAll([
       ElevatedButton(
-        child: const Text("0"),
-        onPressed: () => calculator.pushInput(0),
-      ),
-      ElevatedButton(
         child: const Text("DEL"),
         onPressed: () => calculator.popInput(),
       ),
@@ -112,6 +106,10 @@ class HomePage extends StatelessWidget {
           calculator.clearInput();
         },
       ),
+      ElevatedButton(
+        child: const Text("0"),
+        onPressed: () => calculator.pushInput(0),
+      ),
     ]);
 
     return buttons;
@@ -124,7 +122,7 @@ class HomePage extends StatelessWidget {
         title: const Text("Home"),
         actions: [
           IconButton(
-            key: HomePage.LOGOUT,
+            key: const Key('ButtonHomeLogOff'),
             onPressed: () => auth.logOut(),
             icon: const Icon(Icons.logout),
           ),
@@ -226,6 +224,7 @@ class HomePage extends StatelessWidget {
                             Expanded(
                               child: Center(
                                 child: Text(
+                                  key: const Key("UserAns"),
                                   style: const TextStyle(
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
