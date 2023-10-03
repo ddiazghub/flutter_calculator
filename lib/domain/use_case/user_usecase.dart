@@ -14,5 +14,12 @@ class UserUseCase {
 
   Future<bool> logOut() async => await _repository.logOut();
 
-  Future<bool> update(User user) async => await _repository.update(user);
+  Future<bool> update(User user) async {
+    final response = await _repository.update(user);
+    _repository.session?.save();
+
+    return response;
+  }
+
+  Future<User> refresh() async => await _repository.refresh();
 }

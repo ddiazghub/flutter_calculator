@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
 import 'domain/repositories/repository.dart';
-import 'domain/use_case/authentication_usecase.dart';
+import 'domain/use_case/user_usecase.dart';
 
 void main() {
   Loggy.initLoggy(

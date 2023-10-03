@@ -69,22 +69,6 @@ class User {
     return {"difficulty": difficulty, "history": serializeHistory()};
   }
 
-  void save() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString("user", jsonEncode(toJson()));
-  }
-
-  static Future<User?> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString("user");
-
-    if (userJson == null) {
-      return null;
-    }
-
-    return User.fromJson(jsonDecode(userJson));
-  }
-
   static List<SessionRecord> parseHistory(List<dynamic> history) {
     return history.map((record) => SessionRecord.fromJson(record)).toList();
   }
@@ -94,7 +78,7 @@ class UserWithTokens {
   final String accessToken;
   final String refreshToken;
   late String tokenType = "bearer";
-  final User user;
+  User user;
 
   UserWithTokens(this.accessToken, this.refreshToken, this.user, {this.tokenType = "bearer"});
 
@@ -104,5 +88,27 @@ class UserWithTokens {
       json["refresh_token"],
       User.fromJson(json["user"]),
     );
+  }
+
+  void save() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("user", jsonEncode(user.toJson()));
+    prefs.setString("access_token", accessToken);
+    prefs.setString("refresh_token", refreshToken);
+  }
+
+  static Future<UserWithTokens?> load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString("user");
+    final accessToken = prefs.getString("access_token");
+    final refreshToken = prefs.getString("refresh_token");
+
+    if (userJson == null || refreshToken == null) {
+      return null;
+    }
+
+    final user = User.fromJson(jsonDecode(userJson));
+
+    return UserWithTokens(accessToken!, refreshToken, user);
   }
 }
