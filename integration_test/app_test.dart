@@ -5,11 +5,10 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'dart:math';
-
 import 'package:f_web_authentication/domain/repositories/repository.dart';
 import 'package:f_web_authentication/domain/use_case/authentication_usecase.dart';
-import 'package:f_web_authentication/ui/controller/authentication_controller.dart';
+import 'package:f_web_authentication/helpers.dart';
+import 'package:f_web_authentication/ui/controller/user_controller.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:f_web_authentication/ui/pages/authentication/signup.dart';
@@ -26,21 +25,13 @@ Future<MyApp> createHomeScreen() async {
   return const MyApp();
 }
 
-String randomHexString(int length) {
-    final rng = Random.secure();
-
-    return Iterable.generate(length, (i) => rng.nextInt(16))
-      .map((e) => e.toRadixString(16))
-      .join();
-}
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    Get.put(Repository());
-    Get.put(AuthenticationUseCase());
-    Get.put(AuthenticationController());
+    Get.put(UserRepository("http://192.168.1.8:8000"));
+    Get.put(UserUseCase());
+    Get.put(UserController());
     Get.put(CalculatorController());
   });
 

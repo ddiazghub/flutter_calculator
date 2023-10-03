@@ -1,4 +1,4 @@
-import 'package:f_web_authentication/ui/controller/authentication_controller.dart';
+import 'package:f_web_authentication/ui/controller/user_controller.dart';
 import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,9 +10,9 @@ class Central extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationController auth = Get.find();
+    UserController controller = Get.find();
 
-    return Obx(() => auth.isLogged
+    return Obx(() => controller.isLogged
         ? HomePage()
         : const LoginPage());
   }

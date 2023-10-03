@@ -1,3 +1,5 @@
+import 'package:f_web_authentication/domain/models/session.dart';
+
 class User {
   final String email;
   final String firstName;
@@ -6,6 +8,7 @@ class User {
   final String school;
   final String grade;
   int difficulty;
+  final List<SessionRecord> history;
 
   User(
     this.email,
@@ -15,6 +18,7 @@ class User {
     this.school,
     this.grade,
     this.difficulty,
+    this.history,
   );
 
   String get name => '$firstName $lastName';
@@ -27,7 +31,16 @@ class User {
         json["school"] ?? "someschool",
         json["grade"] ?? "first grade",
         json["difficulty"] ?? 0,
+        parseHistory(json["history"] ?? []),
       );
+
+  static List<SessionRecord> parseHistory(List<dynamic> history) {
+    return history.map((record) => SessionRecord.fromJson(record)).toList();
+  }
+
+  List<Map<String, dynamic>> serializeHistory() {
+    return history.map((record) => record.toJson()).toList();
+  }
 
   Map<String, dynamic> toJson() => {
         "email": email,
@@ -37,6 +50,7 @@ class User {
         "school": school,
         "grade": grade,
         "difficulty": difficulty,
+        "history": serializeHistory(),
       };
 
   Map<String, dynamic> toJsonWithPassword(String password) {
@@ -44,6 +58,10 @@ class User {
     json["password"] = password;
 
     return json;
+  }
+
+  Map<String, dynamic> sessionDataJson() {
+    return {"difficulty": difficulty, "history": serializeHistory()};
   }
 }
 

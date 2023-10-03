@@ -1,5 +1,5 @@
 import 'package:f_web_authentication/ui/central.dart';
-import 'package:f_web_authentication/ui/controller/authentication_controller.dart';
+import 'package:f_web_authentication/ui/controller/user_controller.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,9 +15,9 @@ void main() {
     ),
   );
 
-  Get.put(Repository());
-  Get.put(AuthenticationUseCase());
-  Get.put(AuthenticationController());
+  Get.put(UserRepository("http://10.250.181.123:8000"));
+  Get.put(UserUseCase());
+  Get.put(UserController());
   Get.put(CalculatorController());
   runApp(const MyApp());
 }

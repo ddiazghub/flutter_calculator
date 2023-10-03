@@ -4,7 +4,7 @@ import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:loggy/loggy.dart';
 import 'package:http/http.dart' as http;
 
-class AuthenticationDatatasource {
+class UserDataSource {
   Future<UserWithToken> login(String baseUrl, Credentials credentials) async {
     final response = await http.post(
       Uri.parse("$baseUrl/login"),
@@ -58,13 +58,14 @@ class AuthenticationDatatasource {
     return Future.value(true);
   }
 
-  Future<bool> levelUp(String baseUrl, String token, int difficulty) async {
+  Future<bool> update(String baseUrl, String token, User user) async {
     final response = await http.patch(
-      Uri.parse("$baseUrl/levelup?difficulty=$difficulty"),
+      Uri.parse("$baseUrl/update"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token'
       },
+      body: jsonEncode(user.sessionDataJson())
     );
 
     logInfo(response.statusCode);

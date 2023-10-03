@@ -3,7 +3,7 @@ from typing import Annotated, List
 
 import jwt
 from fastapi import FastAPI, Header, HTTPException
-from model import DisplayUser, LoggedUser, LoginSchema, User, RefreshScheme
+from model import DisplayUser, LoggedUser, LoginSchema, SessionData, User, RefreshScheme
 
 app = FastAPI()
 
@@ -14,6 +14,8 @@ users_db: List[User] = []
 # Define an endpoint to register a user
 @app.post("/register")
 async def register(data: User) -> LoggedUser:
+    print(data)
+
     for user in users_db:
         if user.email == data.email:
             raise HTTPException(status_code=400, detail="Username already registered")
@@ -111,12 +113,13 @@ def current_user(authorization: Annotated[str | None, Header()] = None) -> User:
 
 
 # Sets a new base difficulty for the user
-@app.patch("/levelup")
-async def levelup(
-    difficulty: int, authorization: Annotated[str | None, Header()] = None
+@app.patch("/update")
+async def update(
+    session_data: SessionData, authorization: Annotated[str | None, Header()] = None
 ) -> DisplayUser:
     user = current_user(authorization)
-    user.difficulty = difficulty
+    user.difficulty = session_data.difficulty
+    user.history = session_data.history
 
     return DisplayUser.from_user(user)
 

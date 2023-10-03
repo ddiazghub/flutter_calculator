@@ -5,12 +5,208 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:f_web_authentication/domain/repositories/repository.dart';
+import 'package:f_web_authentication/domain/use_case/authentication_usecase.dart';
+import 'package:f_web_authentication/helpers.dart';
+import 'package:f_web_authentication/main.dart';
+import 'package:f_web_authentication/ui/controller/user_controller.dart';
+import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
+import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
+import 'package:f_web_authentication/ui/pages/authentication/signup.dart';
+import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:f_web_authentication/main.dart';
+import 'package:get/get.dart';
+import 'package:loggy/loggy.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  setUp(() {
+    Get.put(UserRepository("http://192.168.1.8:8000"));
+    Get.put(UserUseCase());
+    Get.put(UserController());
+    Get.put(CalculatorController());
+  });
+
+  // Login Test
+  testWidgets('Login page should render correctly', (WidgetTester tester) async {
+    await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
+
+    expect(find.text('Login with email'), findsOneWidget);
+    expect(find.text('Email address'), findsOneWidget);
+    expect(find.text('Password'), findsOneWidget);
+    expect(find.text('Submit'), findsOneWidget);
+  });
+
+  testWidgets('SignUp and Login', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    final signUpButton = find.byKey(LoginPage.CREATE_BUTTON);
+
+    await tester.tap(signUpButton);
+    await tester.pumpAndSettle();
+
+    var emailField = find.byKey(SignUp.EMAIL);
+    final submitButton = find.byKey(SignUp.SUBMIT);
+    final username = randomHexString(32);
+    final email = "$username@email.com";
+
+    await tester.enterText(emailField, email);
+    await tester.pump();
+    await tester.tap(submitButton);
+    await tester.pumpAndSettle();
+
+    final auth = Get.find<UserController>();
+
+    logInfo("Logged: ${auth.isLogged}");
+    
+    // Expect the signUp to be successful and the home page to be rendered;
+    final homeText = find.text("Hello $email");
+    expect(homeText, findsAtLeastNWidgets(1));
+    expect(find.byType(HomePage), findsOneWidget);
+
+    auth.logOut();
+    emailField = find.byKey(LoginPage.EMAIL);
+
+    await tester.enterText(emailField, email);
+
+    final loginButton = find.byKey(LoginPage.SUBMIT);
+
+    await tester.tap(loginButton);
+    await tester.pumpAndSettle();
+
+    // Expect the login to be successful and the home page to be rendered
+    expect(find.byType(HomePage), findsOneWidget);
+  });
+
+  testWidgets('Email missing @', (WidgetTester tester) async {
+    await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
+
+    final emailField = find.byKey(LoginPage.EMAIL);
+    final passwordField = find.byKey(LoginPage.PASSWORD);
+
+    await tester.enterText(emailField, 'aa.com');
+    await tester.enterText(passwordField, '123456');
+
+    final loginButton = find.byKey(LoginPage.SUBMIT);
+
+    await tester.tap(loginButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text("Enter valid email address"), findsOneWidget);
+  });
+
+  testWidgets('Email Empty', (WidgetTester tester) async {
+    await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
+
+    final emailField = find.byKey(LoginPage.EMAIL);
+    final passwordField = find.byKey(LoginPage.PASSWORD);
+
+    await tester.enterText(emailField, '');
+    await tester.enterText(passwordField, '123456');
+
+    final loginButton = find.byKey(const Key('ButtonLoginSubmit'));
+
+    await tester.tap(loginButton);
+
+    await tester.pumpAndSettle();
+
+    expect(find.text("Enter email"), findsOneWidget);
+  });
+
+  testWidgets('Password', (WidgetTester tester) async {
+    await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
+
+    final emailField = find.byKey(LoginPage.EMAIL);
+    final passwordField = find.byKey(LoginPage.PASSWORD);
+
+    await tester.enterText(emailField, 'a@a.com');
+    await tester.enterText(passwordField, '');
+
+    final loginButton = find.byKey(const Key('ButtonLoginSubmit'));
+
+    await tester.tap(loginButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text("Enter password"), findsOneWidget);
+  });
+
+  testWidgets('Password', (WidgetTester tester) async {
+    await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
+
+    final emailField = find.byKey(LoginPage.EMAIL);
+    final passwordField = find.byKey(LoginPage.PASSWORD);
+
+    await tester.enterText(emailField, 'a@a.com');
+    await tester.enterText(passwordField, '1');
+
+    final loginButton = find.byKey(const Key('ButtonLoginSubmit'));
+
+    await tester.tap(loginButton);
+
+    await tester.pumpAndSettle();
+
+    expect(find.text("Password should have at least 6 characters"),
+        findsOneWidget);
+  });
+
+  //Sign up test
+  testWidgets('Signup is empty', (WidgetTester tester) async {
+    await tester.pumpWidget(const GetMaterialApp(home: SignUp()));
+
+    final emailKey = find.byKey(SignUp.EMAIL);
+    final passKey = find.byKey(SignUp.PASSWORD);
+    final fnkey = find.byKey(SignUp.FIRST_NAME);
+    final lnkey = find.byKey(SignUp.LAST_NAME);
+    final schoolkey = find.byKey(SignUp.SCHOOL);
+    final gradekey = find.byKey(SignUp.GRADE);
+
+    await tester.enterText(emailKey, '');
+    await tester.enterText(passKey, '');
+    await tester.enterText(fnkey, '');
+    await tester.enterText(lnkey, '');
+    await tester.enterText(schoolkey, '');
+    await tester.enterText(gradekey, '');
+
+    final loginButton = find.byKey(SignUp.SUBMIT);
+
+    await tester.tap(loginButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text("Enter email"), findsOneWidget);
+    expect(find.text("Enter password"), findsOneWidget);
+    expect(find.text("Enter name"), findsOneWidget);
+    expect(find.text("Enter last name"), findsOneWidget);
+    expect(find.text("Enter School"), findsOneWidget);
+    expect(find.text("Enter Grade"), findsOneWidget);
+  });
+
+  testWidgets('Error in SignUp', (WidgetTester tester) async {
+    await tester.pumpWidget(const GetMaterialApp(home: SignUp()));
+
+    final emailKey = find.byKey(SignUp.EMAIL);
+    final passKey = find.byKey(SignUp.PASSWORD);
+
+    await tester.enterText(emailKey, 'aa.com');
+    await tester.enterText(passKey, '1');
+
+    final loginButton = find.byKey(SignUp.SUBMIT);
+
+    await tester.tap(loginButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text("Enter valid email address"), findsOneWidget);
+    expect(find.text("Password should have at least 6 characters"), findsOneWidget);
+  });
+
+  //Calculator test
+  testWidgets('Testing Homepage', (WidgetTester tester) async {
+    await tester.pumpWidget(GetMaterialApp(home: HomePage()));
+
+    final uB = find.byKey(HomePage.USER);
+
+    await tester.tap(uB);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Datos de Usuario'), findsOneWidget);
   });
 }

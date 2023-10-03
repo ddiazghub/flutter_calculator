@@ -3,8 +3,8 @@ import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/domain/repositories/repository.dart';
 import 'package:get/get.dart';
 
-class AuthenticationUseCase {
-  final Repository _repository = Get.find();
+class UserUseCase {
+  final UserRepository _repository = Get.find();
 
   Future<User> login(Credentials credentials) async =>
       await _repository.login(credentials);
@@ -14,5 +14,5 @@ class AuthenticationUseCase {
 
   Future<bool> logOut() async => await _repository.logOut();
 
-  Future<bool> levelUp(int difficulty) async => await _repository.levelUp(difficulty);
+  Future<bool> update(User user) async => await _repository.update(user);
 }

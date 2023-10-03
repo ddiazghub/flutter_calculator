@@ -1,14 +1,16 @@
-import 'package:f_web_authentication/ui/controller/authentication_controller.dart';
+import 'package:f_web_authentication/ui/controller/user_controller.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loggy/loggy.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
 
-  static const LOGOUT = Key('ButtonHomeLogOff');
+  static const LOGOUT = Key("ButtonHomeLogOff");
+  static const USER = Key("ButtonHomeUser");
 
-  final AuthenticationController auth = Get.find();
+  final UserController controller = Get.find();
   final CalculatorController calculator = Get.find();
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackbar(
@@ -32,9 +34,9 @@ class HomePage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Email: ${auth.user!.email}'),
-              Text('Colegio: ${auth.user!.school}'),
-              Text('Grado: ${auth.user!.grade}'),
+              Text('Email: ${controller.user!.email}'),
+              Text('Colegio: ${controller.user!.school}'),
+              Text('Grado: ${controller.user!.grade}'),
             ],
           ),
           actions: [
@@ -125,15 +127,19 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             key: HomePage.LOGOUT,
-            onPressed: () => auth.logOut(),
+            onPressed: () => controller.logOut(),
             icon: const Icon(Icons.logout),
           ),
           IconButton(
-            key: const Key('ButtonHomeUsser'),
+            key: USER,
             onPressed: () {
               _showPopup(context);
             },
             icon: const Icon(Icons.person_2_outlined),
+          ),
+          IconButton(
+            onPressed: () => logInfo(controller.user!.history),
+            icon: const Icon(Icons.history),
           )
         ],
       ),
@@ -154,7 +160,7 @@ class HomePage extends StatelessWidget {
                             fontSize: 20,
                           ),
                           key: const Key('TextHomeHello'),
-                          "Hello ${auth.user!.email}",
+                          "Hello ${controller.user!.email}",
                         ),
                       ),
                     ),

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:f_web_authentication/domain/models/session.dart';
-import 'package:f_web_authentication/domain/use_case/authentication_usecase.dart';
+import 'package:f_web_authentication/ui/controller/user_controller.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
@@ -15,21 +15,20 @@ class CalculatorController extends GetxController {
   final session = Session();
   final input = <int>[].obs;
 
-  final AuthenticationUseCase auth = Get.find();
-
   CalculatorController() {
     reset(0);
   }
 
-  int get expectedAnswer => first.value + second.value;
+  int get expected => first.value + second.value;
   bool get emptyInput => input.isEmpty;
 
   void next() {
     genMax(pow(10, difficulty.value + 1) as int);
-    logInfo("Next question: a = $first, b = $second, current = ${session.current}");
+    logInfo(
+        "Next question: a = $first, b = $second, current = ${session.current}");
   }
 
-  int inputtedAnswer() => input.reversed.indexed.fold(
+  int inputValue() => input.reversed.indexed.fold(
         0,
         (acc, pair) => acc + pair.$2 * pow(10, pair.$1) as int,
       );
@@ -53,26 +52,29 @@ class CalculatorController extends GetxController {
   }
 
   void sessionReset() {
-    auth.levelUp(difficulty.value);
-    next();
+    final record = session.intoRecord();
+    Get.find<UserController>().updateData(difficulty.value, record);
     session.reset();
+    next();
   }
 
   AnswerResult submit() {
-    int answer = inputtedAnswer();
+    int answer = inputValue();
 
-    logInfo("Submitted answer: $answer. Expected answer: $expectedAnswer");
+    logInfo("Submitted answer: $answer. Expected answer: $expected");
 
     bool correct = false;
+    session.questions.add(Question("$first + $second", expected, answer));
 
-    if (answer == expectedAnswer) {
+    if (answer == expected) {
       session.correct.value++;
       correct = true;
     }
 
     if (session.current.value == 5) {
       if (difficulty < 5) {
-        if (session.correct > 4 && session.elapsed < const Duration(seconds: 40)) {
+        if (session.correct > 4 &&
+            session.totalTime < const Duration(seconds: 40)) {
           difficulty.value++;
           sessionReset();
 

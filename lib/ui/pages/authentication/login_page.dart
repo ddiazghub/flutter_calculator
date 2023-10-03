@@ -1,9 +1,8 @@
 import 'package:f_web_authentication/domain/models/credentials.dart';
-import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
-import '../../controller/authentication_controller.dart';
+import '../../controller/user_controller.dart';
 import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,6 +11,7 @@ class LoginPage extends StatefulWidget {
   static const CREATE_BUTTON = Key("CreateAccountButton");
   static const EMAIL = Key("LoginEmailField");
   static const SUBMIT = Key("LoginSubmitField");
+  static const PASSWORD = Key("LoginPasswordField");
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -21,20 +21,21 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final controllerEmail = TextEditingController(text: 'a@a.com');
   final controllerPassword = TextEditingController(text: '123456');
-  AuthenticationController authenticationController = Get.find();
+  UserController controller = Get.find();
 
   Future<void> _login(String theEmail, String thePassword) async {
     logInfo('_login $theEmail $thePassword');
-    try {
-      await authenticationController.login(Credentials(theEmail, thePassword));
-    } catch (err) {
-      Get.snackbar(
-        "Login",
-        err.toString(),
-        icon: const Icon(Icons.person, color: Colors.red),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+
+    // try {
+      await controller.login(Credentials(theEmail, thePassword));
+    // } catch (err) {
+    //   Get.snackbar(
+    //     "Login",
+    //     err.toString(),
+    //     icon: const Icon(Icons.person, color: Colors.red),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
   }
 
   @override
@@ -77,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   TextFormField(
+                    key: LoginPage.PASSWORD,
                     controller: controllerPassword,
                     decoration: const InputDecoration(labelText: "Password"),
                     keyboardType: TextInputType.number,
