@@ -1,5 +1,6 @@
 from __future__ import annotations
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class Question(BaseModel):
@@ -24,6 +25,7 @@ class User(BaseModel):
     grade: str
     difficulty: int = 0
     history: list[Session] = []
+    updated_at: datetime = datetime.now()
     
 
 class LoginSchema(BaseModel):
@@ -40,6 +42,7 @@ class DisplayUser(BaseModel):
     grade: str
     difficulty: int
     history: list[Session]
+    updated_at: datetime
 
     @staticmethod
     def from_user(user: User) -> DisplayUser:
@@ -51,9 +54,9 @@ class SessionData(BaseModel):
     history: list[Session]
 
 
-class LoggedUser(BaseModel):
+class UserWithTokens(BaseModel):
     access_token: str
-    refresh_token: str
+    refresh_token: str = "bearer"
     token_type: str
     user: DisplayUser
 

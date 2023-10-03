@@ -35,8 +35,8 @@ class _FirebaseSignUpState extends State<SignUp> {
 
   Future<void> _signup(User user, String password) async {
     // try {
-      await controller.signUp(user, password);
-      Get.off(() => const Central());
+    await controller.signUp(user, password);
+    Get.off(() => const Central());
     // } catch (err) {
     //   logError('SignUp error $err');
     //   Get.snackbar(
@@ -200,6 +200,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                           controllerGrade.text,
                           0,
                           [],
+                          DateTime.now(),
                         );
 
                         await _signup(user, controllerPassword.text);

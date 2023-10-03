@@ -4,7 +4,6 @@ import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/domain/use_case/authentication_usecase.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:get/get.dart';
-
 import 'package:loggy/loggy.dart';
 
 class UserController extends GetxController {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:f_web_authentication/domain/models/operator.dart';
 import 'package:get/get.dart';
@@ -63,30 +64,58 @@ class SessionRecord {
       );
 
   @override
-  String toString() => "Session(time: ${durationToString(totalTime)}, correct: $correct)";
+  String toString() =>
+      "Session(time: ${durationToString(totalTime)}, correct: $correct)";
 }
 
 class Question {
-  late String question;
-  final int expected;
-  final int answer;
+  static final _rng = Random();
 
-  Question(this.question, this.expected, this.answer);
+  late int first;
+  late int second;
+  late Operator op;
+  int answer;
 
-  factory Question.from(
-          int first, int second, Operator op, int expected, int answer) =>
-      Question(
-        "$first $op $second",
-        expected,
-        answer,
-      );
+  int get expected => op.apply(first, second);
+  String get question => "$first $op $second";
+
+  Question(this.first, this.second, this.op, this.answer);
+
+  factory Question.from(String question, int answer) {
+    final parts = question.split(" ");
+
+    return Question(
+      int.parse(parts[0]),
+      int.parse(parts[2]),
+      Operator.from(parts[1]),
+      answer,
+    );
+  }
+
+  factory Question.random(int difficulty) {
+    var (max, operators) = choicesFor(difficulty);
+    final op = operators[_rng.nextInt(operators.length)];
+    max = op == Operator.Mul ? max ~/ 10 : max;
+    final first = _rng.nextInt(max);
+    var second = _rng.nextInt(max);
+    second = op == Operator.Sub ? second % first : second;
+
+    return Question(first, second, op, 0);
+  }
 
   Map<String, dynamic> toJson() =>
       {"question": question, "expected": expected, "answer": answer};
 
-  factory Question.fromJson(Map<String, dynamic> json) => Question(
+  factory Question.fromJson(Map<String, dynamic> json) => Question.from(
         json["question"],
-        json["expected"],
         json["answer"],
       );
+
+  static (int, List<Operator>) choicesFor(int difficulty) {
+    final power = 1 + (difficulty + 1) ~/ 2;
+    final max = pow(10, power).toInt();
+    final operators = Operator.values.take(1 + difficulty ~/ 2);
+    
+    return (max, operators.toList());
+  }
 }

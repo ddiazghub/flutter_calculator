@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:f_web_authentication/domain/models/session.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
   final String email;
@@ -9,6 +12,7 @@ class User {
   final String grade;
   int difficulty;
   final List<SessionRecord> history;
+  DateTime updatedAt;
 
   User(
     this.email,
@@ -19,6 +23,7 @@ class User {
     this.grade,
     this.difficulty,
     this.history,
+    this.updatedAt,
   );
 
   String get name => '$firstName $lastName';
@@ -32,11 +37,10 @@ class User {
         json["grade"] ?? "first grade",
         json["difficulty"] ?? 0,
         parseHistory(json["history"] ?? []),
+        json["updated_at"] != null
+            ? DateTime.parse(json["updated_at"])
+            : DateTime.now(),
       );
-
-  static List<SessionRecord> parseHistory(List<dynamic> history) {
-    return history.map((record) => SessionRecord.fromJson(record)).toList();
-  }
 
   List<Map<String, dynamic>> serializeHistory() {
     return history.map((record) => record.toJson()).toList();
@@ -51,6 +55,7 @@ class User {
         "grade": grade,
         "difficulty": difficulty,
         "history": serializeHistory(),
+        "updated_at": updatedAt.toIso8601String(),
       };
 
   Map<String, dynamic> toJsonWithPassword(String password) {
@@ -63,15 +68,41 @@ class User {
   Map<String, dynamic> sessionDataJson() {
     return {"difficulty": difficulty, "history": serializeHistory()};
   }
+
+  void save() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("user", jsonEncode(toJson()));
+  }
+
+  static Future<User?> load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString("user");
+
+    if (userJson == null) {
+      return null;
+    }
+
+    return User.fromJson(jsonDecode(userJson));
+  }
+
+  static List<SessionRecord> parseHistory(List<dynamic> history) {
+    return history.map((record) => SessionRecord.fromJson(record)).toList();
+  }
 }
 
-class UserWithToken {
-  final String token;
+class UserWithTokens {
+  final String accessToken;
+  final String refreshToken;
+  late String tokenType = "bearer";
   final User user;
 
-  UserWithToken(this.token, this.user);
+  UserWithTokens(this.accessToken, this.refreshToken, this.user, {this.tokenType = "bearer"});
 
-  factory UserWithToken.fromJson(Map<String, dynamic> json) {
-    return UserWithToken(json["access_token"], User.fromJson(json["user"]));
+  factory UserWithTokens.fromJson(Map<String, dynamic> json) {
+    return UserWithTokens(
+      json["access_token"],
+      json["refresh_token"],
+      User.fromJson(json["user"]),
+    );
   }
 }

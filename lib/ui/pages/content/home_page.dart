@@ -73,14 +73,6 @@ class HomePage extends StatelessWidget {
       ElevatedButton(
         child: const Text("GO"),
         onPressed: () {
-          if (calculator.emptyInput) {
-            showSnackbar(
-              context,
-              "Input should not be empty, type a number to continue",
-              Colors.red,
-            );
-          }
-
           switch (calculator.submit()) {
             case AnswerResult.Correct:
               showSnackbar(
@@ -171,7 +163,7 @@ class HomePage extends StatelessWidget {
                             Expanded(
                               child: Center(
                                 child: Text(
-                                  "Difficulty: ${calculator.difficulty.value}",
+                                  "Difficulty: ${calculator.difficulty}",
                                 ),
                               ),
                             ),
@@ -214,7 +206,7 @@ class HomePage extends StatelessWidget {
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  "${calculator.first} + ${calculator.second}",
+                                  calculator.question.question,
                                 ),
                               ),
                             ),

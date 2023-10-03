@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:f_web_authentication/domain/models/operator.dart';
 import 'package:f_web_authentication/domain/models/session.dart';
 import 'package:f_web_authentication/ui/controller/user_controller.dart';
 import 'package:get/get.dart';
@@ -8,10 +9,8 @@ import 'package:loggy/loggy.dart';
 enum AnswerResult { Correct, Wrong, LevelUp, SessionReset }
 
 class CalculatorController extends GetxController {
-  final _rng = Random();
-  final difficulty = 0.obs;
-  final first = 0.obs;
-  final second = 0.obs;
+  final _difficulty = 0.obs;
+  final _question = Question(0, 0, Operator.Add, 0).obs;
   final session = Session();
   final input = <int>[].obs;
 
@@ -19,18 +18,19 @@ class CalculatorController extends GetxController {
     reset(0);
   }
 
-  int get expected => first.value + second.value;
-  bool get emptyInput => input.isEmpty;
+  int get difficulty => _difficulty.value;
+  Question get question => _question.value;
+
+  set difficulty(int value) => _difficulty.value = value;
 
   void next() {
-    genMax(pow(10, difficulty.value + 1) as int);
-    logInfo(
-        "Next question: a = $first, b = $second, current = ${session.current}");
+    _question.value = Question.random(difficulty);
+    logInfo("Next question: a = ${question.first}, b = ${question.second}, current = ${session.current}");
   }
 
   int inputValue() => input.reversed.indexed.fold(
         0,
-        (acc, pair) => acc + pair.$2 * pow(10, pair.$1) as int,
+        (acc, pair) => acc + pair.$2 * pow(10, pair.$1).toInt(),
       );
 
   void pushInput(int digit) {
@@ -53,7 +53,7 @@ class CalculatorController extends GetxController {
 
   void sessionReset() {
     final record = session.intoRecord();
-    Get.find<UserController>().updateData(difficulty.value, record);
+    Get.find<UserController>().updateData(difficulty, record);
     session.reset();
     next();
   }
@@ -61,21 +61,21 @@ class CalculatorController extends GetxController {
   AnswerResult submit() {
     int answer = inputValue();
 
-    logInfo("Submitted answer: $answer. Expected answer: $expected");
+    logInfo("Submitted answer: $answer. Expected answer: ${question.expected}");
 
     bool correct = false;
-    session.questions.add(Question("$first + $second", expected, answer));
+    question.answer = answer;
+    session.questions.add(question);
 
-    if (answer == expected) {
+    if (answer == question.expected) {
       session.correct.value++;
       correct = true;
     }
 
     if (session.current.value == 5) {
       if (difficulty < 5) {
-        if (session.correct > 4 &&
-            session.totalTime < const Duration(seconds: 40)) {
-          difficulty.value++;
+        if (session.correct > 4 && session.totalTime < Duration(seconds: 30 + 15 * difficulty)) {
+          difficulty++;
           sessionReset();
 
           return AnswerResult.LevelUp;
@@ -97,13 +97,8 @@ class CalculatorController extends GetxController {
     }
   }
 
-  void genMax(int max) {
-    first.value = _rng.nextInt(max);
-    second.value = _rng.nextInt(max);
-  }
-
   void reset(int initialDifficulty) {
-    difficulty.value = initialDifficulty;
+    difficulty = initialDifficulty;
     session.reset();
     clearInput();
     next();

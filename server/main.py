@@ -3,7 +3,7 @@ from typing import Annotated, List
 
 import jwt
 from fastapi import FastAPI, Header, HTTPException
-from model import DisplayUser, LoggedUser, LoginSchema, SessionData, User, RefreshScheme
+from model import DisplayUser, UserWithTokens, LoginSchema, SessionData, User, RefreshScheme
 
 app = FastAPI()
 
@@ -13,7 +13,7 @@ users_db: List[User] = []
 
 # Define an endpoint to register a user
 @app.post("/register")
-async def register(data: User) -> LoggedUser:
+async def register(data: User) -> UserWithTokens:
     print(data)
 
     for user in users_db:
@@ -47,20 +47,21 @@ REFRESH_TOKEN_EXPIRE_MINUTES = 1440
 
 
 # Define a function to authenticate a user with a given username and password
+def get_user(username: str) -> User | None:
+    return next((user for user in users_db if user.email == username), None)
+
+
+# Define a function to authenticate a user with a given username and password
 def authenticate_user(username: str, password: str) -> User:
-    for user in users_db:
-        if user.email == username:
-            if user.password == password:
-                return user
-            else:
-                raise HTTPException(
-                    status_code=401, detail="Invalid username or password"
-                )
+    user = get_user(username)
+
+    if user and user.password == password:
+        return user
 
     raise HTTPException(status_code=401, detail="Invalid username or password")
 
 
-def do_login(user: User) -> LoggedUser:
+def do_login(user: User) -> UserWithTokens:
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
 
@@ -76,7 +77,7 @@ def do_login(user: User) -> LoggedUser:
         algorithm=JWT_ALGORITHM,
     )
 
-    return LoggedUser(
+    return UserWithTokens(
         access_token=access_token,
         refresh_token=refresh_token,
         token_type="bearer",
@@ -120,6 +121,7 @@ async def update(
     user = current_user(authorization)
     user.difficulty = session_data.difficulty
     user.history = session_data.history
+    user.updated_at = datetime.now()
 
     return DisplayUser.from_user(user)
 
@@ -134,7 +136,7 @@ async def me(authorization: Annotated[str | None, Header()] = None) -> DisplayUs
 
 # Define an endpoint to refresh an access token with a refresh token
 @app.post("/refresh")
-async def refresh_token(data: RefreshScheme):
+async def refresh_token(data: RefreshScheme) -> UserWithTokens:
     try:
         decoded_token = jwt.decode(
             data.refresh_token, JWT_SECRET, algorithms=[JWT_ALGORITHM]
@@ -149,7 +151,16 @@ async def refresh_token(data: RefreshScheme):
             algorithm=JWT_ALGORITHM,
         )
 
-        return {"access_token": access_token, "token_type": "bearer"}
+        user = get_user(username)
+
+        if not user:
+            raise HTTPException(status_code=401, detail="User does not exist")
+
+        return UserWithTokens(
+            access_token=access_token,
+            token_type="bearer",
+            user=DisplayUser.from_user(user),
+        )
     except Exception as e:
         print(e)
 
