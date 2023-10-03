@@ -1,5 +1,6 @@
 import 'package:f_web_authentication/ui/controller/user_controller.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
+import 'package:f_web_authentication/ui/pages/content/history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
@@ -138,7 +139,8 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.person_2_outlined),
           ),
           IconButton(
-            onPressed: () => logInfo(controller.user!.history),
+            onPressed: () =>
+                Get.to(() => HistoryPage(items: controller.user!.history)),
             icon: const Icon(Icons.history),
           )
         ],
