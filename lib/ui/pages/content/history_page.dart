@@ -1,5 +1,5 @@
 import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
-import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
+import 'package:f_web_authentication/ui/components/history_item.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
@@ -12,19 +12,20 @@ class HistoryPage extends StatelessWidget {
   static const USER = Key("ButtonHistoryUser");
 
   final UserUseCase useCase = Get.find();
-  final CalculatorController calculator = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    final history = useCase.user!.history;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
+        title: const Text("History"),
         actions: [
           IconButton(
             key: LOGOUT,
             onPressed: () async {
               await useCase.logOut();
-              await Get.off(() => const LoginPage());
+              await Get.offAll(() => const LoginPage());
             },
             icon: const Icon(Icons.logout),
           ),
@@ -35,50 +36,10 @@ class HistoryPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Obx(
-              () => Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          style: const TextStyle(
-                            fontSize: 23,
-                          ),
-                          key: const Key('TextHomeHello'),
-                          "Hello ${useCase.user!.email}",
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Center(
-                            child: Text('School: ${useCase.user!.school}'),
-                          ),
-                          Center(
-                            child: Text('Grade: ${useCase.user!.grade}'),
-                          ),
-                          Center(
-                            child: Text(
-                              "Current Difficulty: ${calculator.difficulty}",
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: ListView.builder(
+        itemCount: history.length,
+        itemBuilder: (context, index) =>
+            HistoryItem(title: "Session ${index + 1}", record: history[index]),
       ),
     );
   }

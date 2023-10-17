@@ -44,7 +44,7 @@ class Session {
   }
 
   SessionRecord intoRecord() {
-    return SessionRecord(totalTime, correct.value, questions);
+    return SessionRecord(totalTime, correct.value, List.from(questions));
   }
 }
 
@@ -52,6 +52,8 @@ class SessionRecord {
   final Duration totalTime;
   final int correct;
   final List<Question> questions;
+
+  String get totalTimeString => durationToString(totalTime);
 
   SessionRecord(this.totalTime, this.correct, this.questions);
 
@@ -64,11 +66,14 @@ class SessionRecord {
   factory SessionRecord.fromJson(Map<String, dynamic> json) => SessionRecord(
         Duration(seconds: json["total_time"]),
         json["correct"],
-        (json["questions"] as List<dynamic>).map((json) => Question.fromJson(json)).toList(),
+        (json["questions"] as List<dynamic>)
+            .map((json) => Question.fromJson(json))
+            .toList(),
       );
 
   @override
-  String toString() => "Session(time: ${durationToString(totalTime)}, correct: $correct)";
+  String toString() =>
+      "Session(time: ${durationToString(totalTime)}, correct: $correct)";
 }
 
 class Question {
@@ -81,6 +86,7 @@ class Question {
 
   int get expected => op.apply(first, second);
   String get question => "$first $op $second";
+  bool get correct => answer == expected;
 
   Question(this.first, this.second, this.op, this.answer);
 
@@ -106,7 +112,8 @@ class Question {
     return Question(first, second, op, 0);
   }
 
-  Map<String, dynamic> toJson() => {"question": question, "expected": expected, "answer": answer};
+  Map<String, dynamic> toJson() =>
+      {"question": question, "expected": expected, "answer": answer};
 
   factory Question.fromJson(Map<String, dynamic> json) => Question.from(
         json["question"],

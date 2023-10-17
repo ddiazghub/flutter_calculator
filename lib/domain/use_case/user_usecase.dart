@@ -46,8 +46,11 @@ class UserUseCase {
     user?.difficulty = difficulty;
     user?.history.add(lastSession);
     user?.updatedAt = DateTime.now();
+    logInfo(lastSession);
+    logInfo("q1 = ${user!.history.last.questions}");
     session?.save();
     final response = await _repository.update(accessToken, user!);
+    logInfo("q2 = ${user!.history.last.questions}");
 
     return response;
   }

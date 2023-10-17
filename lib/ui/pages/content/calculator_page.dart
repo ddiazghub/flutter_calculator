@@ -2,6 +2,7 @@ import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:f_web_authentication/ui/pages/content/home_page.dart';
+import 'package:f_web_authentication/ui/pages/content/summary_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,29 +14,6 @@ class CalculatorPage extends StatelessWidget {
 
   final UserUseCase useCase = Get.find();
   final CalculatorController calculator = Get.find();
-
-  static void showResultPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Resultado Sesión'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              child: const Text('Close'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackbar(
       BuildContext context, String text, Color color) {
@@ -68,7 +46,9 @@ class CalculatorPage extends StatelessWidget {
       ),
       ElevatedButton(
         child: const Text("GO"),
-        onPressed: () {
+        onPressed: () async {
+          final difficulty = calculator.difficulty;
+
           switch (calculator.submit()) {
             case AnswerResult.Correct:
               showSnackbar(
@@ -90,6 +70,10 @@ class CalculatorPage extends StatelessWidget {
                 "Level up, difficulty will increase",
                 Colors.green,
               );
+
+              await Get.off(SummaryPage(
+                  record: useCase.user!.history.last, difficulty: difficulty));
+
               break;
             case AnswerResult.SessionReset:
               showSnackbar(
@@ -97,6 +81,9 @@ class CalculatorPage extends StatelessWidget {
                 "Level up failed, difficulty will stay the same",
                 Colors.red,
               );
+
+              await Get.off(SummaryPage(
+                  record: useCase.user!.history.last, difficulty: difficulty));
           }
 
           calculator.clearInput();
@@ -221,7 +208,9 @@ class CalculatorPage extends StatelessWidget {
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  calculator.input.isNotEmpty ? calculator.input.join() : "0",
+                                  calculator.input.isNotEmpty
+                                      ? calculator.input.join()
+                                      : "0",
                                 ),
                               ),
                             ),

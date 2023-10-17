@@ -72,7 +72,7 @@ class CalculatorController extends GetxController {
     question.answer = answer;
     session.questions.add(question);
 
-    if (answer == question.expected) {
+    if (question.correct) {
       session.correct.value++;
       correct = true;
     }

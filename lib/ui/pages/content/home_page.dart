@@ -80,9 +80,7 @@ class HomePage extends StatelessWidget {
                     Expanded(
                       child: Center(
                         child: Text(
-                          style: const TextStyle(
-                            fontSize: 23,
-                          ),
+                          style: const TextStyle(fontSize: 23),
                           key: const Key('TextHomeHello'),
                           "Hello ${useCase.user!.email}",
                         ),
