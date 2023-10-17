@@ -89,7 +89,19 @@ class MainPage extends StatelessWidget {
                             fontSize: 20,
                           ),
                           key: const Key('TextHomeHello'),
-                          "Hello ${controller.user!.email}",
+                          "Hello ${controller.user!.email}: ${controller.user!.firstName} ${controller.user!.lastName}",
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Center(
+                        child: Text(
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                          key: const Key('TextBD'),
+                          "Birthday: ${controller.user!.birthday}",
                         ),
                       ),
                     ),
@@ -118,38 +130,14 @@ class MainPage extends StatelessWidget {
                       ),
                     ),
                     Expanded(
+                      flex: 2,
                       child: Center(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "Difficulty: ${calculator.difficulty.value}",
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "Answers: ${calculator.session.current}",
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "Correct: ${calculator.session.correct}",
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "Time: ${calculator.session.elapsedString}",
-                                ),
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                          key: const Key('Textdif'),
+                          "Grade: ${controller.user!.difficulty}",
                         ),
                       ),
                     ),
