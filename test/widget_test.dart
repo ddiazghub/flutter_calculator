@@ -5,6 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/domain/repositories/repository.dart';
 import 'package:f_web_authentication/domain/use_case/authentication_usecase.dart';
 import 'package:f_web_authentication/helpers.dart';
@@ -18,6 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
+import 'package:mockito/mockito.dart';
+
+class MockUserController extends Mock implements UserController {}
 
 void main() {
   setUp(() {
@@ -27,8 +31,39 @@ void main() {
     Get.put(CalculatorController());
   });
 
+  final mockUserController = MockUserController();
+
+  // Mock the Get.find() function to return the mock UserController
+  when(Get.find<UserController>()).thenReturn(mockUserController);
+
+  // testWidgets('HomePage displays user data', (WidgetTester tester) async {
+  //   // Mock the user data you expect to receive from the UserController
+  //   final user = User(
+  //     email: 'test@example.com',
+  //     firstName: 'John',
+  //     lastName: 'Doe',
+  //     birthday: '2000-01-01',
+  //     school: 'Test School',
+  //     grade: '12',
+  //     difficulty: 5,
+  //     history: [],
+  //   );
+  //   when(mockUserController.user).thenReturn(user);
+  //   // Build the widget
+  //   await tester.pumpWidget(
+  //     MaterialApp(
+  //       home: HomePage(),
+  //     ),
+  //   );
+/* 
+    // Verify that the user data is displayed on the screen
+    expect(find.text('Hello test@example.com'), findsOneWidget);
+    expect(find.text('Colegio: Test School'), findsOneWidget);
+    expect(find.text('Grado: 12'), findsOneWidget);
+  }); */
   // Login Test
-  testWidgets('Login page should render correctly', (WidgetTester tester) async {
+  testWidgets('Login page should render correctly',
+      (WidgetTester tester) async {
     await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
 
     expect(find.text('Login with email'), findsOneWidget);
@@ -58,7 +93,7 @@ void main() {
     final auth = Get.find<UserController>();
 
     logInfo("Logged: ${auth.isLogged}");
-    
+
     // Expect the signUp to be successful and the home page to be rendered;
     final homeText = find.text("Hello $email");
     expect(homeText, findsAtLeastNWidgets(1));
@@ -195,7 +230,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Enter valid email address"), findsOneWidget);
-    expect(find.text("Password should have at least 6 characters"), findsOneWidget);
+    expect(find.text("Password should have at least 6 characters"),
+        findsOneWidget);
   });
 
   //Calculator test
