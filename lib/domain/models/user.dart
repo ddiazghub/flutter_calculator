@@ -1,3 +1,4 @@
+import 'package:f_web_authentication/domain/models/credentials.dart';
 import 'package:f_web_authentication/domain/models/session.dart';
 import 'package:f_web_authentication/domain/repositories/local_repository.dart';
 import 'package:get/get.dart';
@@ -79,7 +80,8 @@ class UserWithTokens {
   late String tokenType = "bearer";
   User user;
 
-  UserWithTokens(this.accessToken, this.refreshToken, this.user, {this.tokenType = "bearer"});
+  UserWithTokens(this.accessToken, this.refreshToken, this.user,
+      {this.tokenType = "bearer"});
 
   factory UserWithTokens.fromJson(Map<String, dynamic> json) {
     return UserWithTokens(
@@ -91,7 +93,30 @@ class UserWithTokens {
 
   Future<void> save() async => Get.find<LocalRepository>().save(this);
 
-  static Future<UserWithTokens?> load() async => Get.find<LocalRepository>().load();
+  static Future<UserWithTokens?> load() async =>
+      Get.find<LocalRepository>().load();
 
   static Future<void> clear() async => Get.find<LocalRepository>().clear();
+}
+
+class UserWithPassword {
+  final User user;
+  final String password;
+
+  String get email => user.email;
+  String get firstName => user.firstName;
+  String get lastName => user.lastName;
+  String get birthday => user.birthday;
+  String get school => user.school;
+  String get grade => user.grade;
+  int get difficulty => user.difficulty;
+  List<SessionRecord> get history => user.history;
+  DateTime get updatedAt => user.updatedAt;
+
+  set user(User value) => user = value;
+
+  UserWithPassword(this.user, this.password);
+
+  bool validate(Credentials credentials) =>
+      user.email == credentials.email && password == credentials.password;
 }

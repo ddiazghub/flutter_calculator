@@ -34,18 +34,18 @@ class _FirebaseSignUpState extends State<SignUp> {
   UserUseCase useCase = Get.find();
 
   Future<void> _signup(User user, String password) async {
-    // try {
-    await useCase.signUp(user, password);
-    Get.offAll(() => HomePage());
-    // } catch (err) {
-    //   logError('SignUp error $err');
-    //   Get.snackbar(
-    //     "Sign Up",
-    //     err.toString(),
-    //     icon: const Icon(Icons.person, color: Colors.red),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      await useCase.signUp(user, password);
+      Get.offAll(() => HomePage());
+    } catch (err) {
+      logError('SignUp error $err');
+      Get.snackbar(
+        "Sign Up",
+        err.toString(),
+        icon: const Icon(Icons.person, color: Colors.red),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {

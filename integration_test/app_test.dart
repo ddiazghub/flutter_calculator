@@ -8,7 +8,6 @@
 import 'package:f_web_authentication/domain/repositories/local_repository.dart';
 import 'package:f_web_authentication/domain/repositories/repository.dart';
 import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
-import 'package:f_web_authentication/helpers.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:f_web_authentication/ui/pages/authentication/signup.dart';
@@ -18,6 +17,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:f_web_authentication/main.dart';
+
+import '../test/fake_local_datasource.dart';
+import '../test/fake_user_datasource.dart';
 
 Future<MyApp> createHomeScreen() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +31,8 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    Get.put(UserRepository("http://192.168.1.8:8000"));
-    Get.put(LocalRepository());
+    Get.put(UserRepository(FakeUserDataSource()));
+    Get.put(LocalRepository(dataSource: FakeLocalDataSource()));
     Get.put(UserUseCase());
     Get.put(CalculatorController());
   });
@@ -46,8 +48,7 @@ void main() {
 
     final emailField = find.byKey(SignUp.EMAIL);
     final submitButton = find.byKey(SignUp.SUBMIT);
-    final username = randomHexString(32);
-    final email = "$username@email.com";
+    const email = "user@email.com";
 
     await tester.enterText(emailField, email);
     await tester.pump();

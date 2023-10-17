@@ -1,10 +1,16 @@
 import 'dart:convert';
 
 import 'package:f_web_authentication/domain/models/user.dart';
-import 'package:loggy/loggy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalDataSource {
+abstract class ILocalDataSource {
+  Future<void> save(UserWithTokens session);
+  Future<UserWithTokens?> load();
+  Future<void> clear();
+}
+
+class LocalDataSource implements ILocalDataSource {
+  @override
   Future<void> save(UserWithTokens session) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("user", jsonEncode(session.user.toJson()));
@@ -12,6 +18,7 @@ class LocalDataSource {
     prefs.setString("refresh_token", session.refreshToken);
   }
 
+  @override
   Future<UserWithTokens?> load() async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString("user");
@@ -22,15 +29,12 @@ class LocalDataSource {
       return null;
     }
 
-    logInfo("User: $userJson");
-    logInfo("Access: $accessToken");
-    logInfo("Refresh: $refreshToken");
-
     final user = User.fromJson(jsonDecode(userJson));
 
     return UserWithTokens(accessToken!, refreshToken, user);
   }
 
+  @override
   Future<void> clear() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();

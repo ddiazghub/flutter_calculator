@@ -27,17 +27,17 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login(String theEmail, String thePassword) async {
     logInfo('_login $theEmail $thePassword');
 
-    // try {
-    await useCase.login(Credentials(theEmail, thePassword));
-    Get.off(() => HomePage());
-    // } catch (err) {
-    //   Get.snackbar(
-    //     "Login",
-    //     err.toString(),
-    //     icon: const Icon(Icons.person, color: Colors.red),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      await useCase.login(Credentials(theEmail, thePassword));
+      Get.off(() => HomePage());
+    } catch (err) {
+      Get.snackbar(
+        "Login",
+        err.toString(),
+        icon: const Icon(Icons.person, color: Colors.red),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   @override

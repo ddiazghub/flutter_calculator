@@ -15,7 +15,7 @@ void main() {
     ),
   );
 
-  Get.put(UserRepository("http://192.168.1.3:8000"));
+  Get.put(UserRepository.remote( "http://192.168.1.3:8000"));
   Get.put(LocalRepository());
   Get.put(UserUseCase());
   Get.put(CalculatorController());

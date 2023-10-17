@@ -8,7 +8,6 @@
 import 'package:f_web_authentication/domain/repositories/local_repository.dart';
 import 'package:f_web_authentication/domain/repositories/repository.dart';
 import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
-import 'package:f_web_authentication/helpers.dart';
 import 'package:f_web_authentication/main.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
@@ -19,10 +18,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
+import 'fake_local_datasource.dart';
+import 'fake_user_datasource.dart';
+
 void main() {
   setUp(() {
-    Get.put(UserRepository("http://192.168.1.8:8000"));
-    Get.put(LocalRepository());
+    Get.put(UserRepository(FakeUserDataSource()));
+    Get.put(LocalRepository(dataSource: FakeLocalDataSource()));
     Get.put(UserUseCase());
     Get.put(CalculatorController());
   });
@@ -47,8 +49,7 @@ void main() {
 
     var emailField = find.byKey(SignUp.EMAIL);
     final submitButton = find.byKey(SignUp.SUBMIT);
-    final username = randomHexString(32);
-    final email = "$username@email.com";
+    const email = "user@email.com";
 
     await tester.enterText(emailField, email);
     await tester.pump();
@@ -210,3 +211,43 @@ void main() {
     expect(find.text('Datos de Usuario'), findsOneWidget);
   });
 }
+
+
+// void main() {
+//   setUp(() {
+//     Get.put(UserRepository("http://192.168.1.8:8000"));
+//     Get.put(UserUseCase());
+//     Get.put(UserController());
+//     Get.put(CalculatorController());
+//   });
+// 
+//   final mockUserController = MockUserController();
+// 
+//   // Mock the Get.find() function to return the mock UserController
+//   when(Get.find<UserController>()).thenReturn(mockUserController);
+// 
+//   // testWidgets('HomePage displays user data', (WidgetTester tester) async {
+//   //   // Mock the user data you expect to receive from the UserController
+//   //   final user = User(
+//   //     email: 'test@example.com',
+//   //     firstName: 'John',
+//   //     lastName: 'Doe',
+//   //     birthday: '2000-01-01',
+//   //     school: 'Test School',
+//   //     grade: '12',
+//   //     difficulty: 5,
+//   //     history: [],
+//   //   );
+//   //   when(mockUserController.user).thenReturn(user);
+//   //   // Build the widget
+//   //   await tester.pumpWidget(
+//   //     MaterialApp(
+//   //       home: HomePage(),
+//   //     ),
+//   //   );
+// /* 
+//     // Verify that the user data is displayed on the screen
+//     expect(find.text('Hello test@example.com'), findsOneWidget);
+//     expect(find.text('Colegio: Test School'), findsOneWidget);
+//     expect(find.text('Grado: 12'), findsOneWidget);
+//   }); */

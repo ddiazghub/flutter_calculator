@@ -4,8 +4,21 @@ import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:loggy/loggy.dart';
 import 'package:http/http.dart' as http;
 
-class UserDataSource {
-  Future<UserWithTokens> login(String baseUrl, Credentials credentials) async {
+abstract class IUserDataSource {
+  Future<UserWithTokens> login(Credentials credentials);
+  Future<UserWithTokens> signUp(User user, String password);
+  Future<bool> logOut() async => true;
+  Future<bool> update(String token, User user);
+  Future<UserWithTokens> refresh(String token);
+}
+
+class UserDataSource implements IUserDataSource {
+  final String baseUrl;
+
+  UserDataSource(this.baseUrl);
+
+  @override
+  Future<UserWithTokens> login(Credentials credentials) async {
     final response = await http.post(
       Uri.parse("$baseUrl/login"),
       headers: {
@@ -29,8 +42,11 @@ class UserDataSource {
     }
   }
 
-  Future<UserWithTokens> signUp(
-      String baseUrl, User user, String password) async {
+  @override
+  Future<bool> logOut() async => true;
+
+  @override
+  Future<UserWithTokens> signUp(User user, String password) async {
     final response = await http.post(
       Uri.parse("$baseUrl/register"),
       headers: <String, String>{
@@ -52,11 +68,8 @@ class UserDataSource {
     }
   }
 
-  Future<bool> logOut() async {
-    return Future.value(true);
-  }
-
-  Future<bool> update(String baseUrl, String token, User user) async {
+  @override
+  Future<bool> update(String token, User user) async {
     final response = await http.patch(Uri.parse("$baseUrl/update"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -76,7 +89,8 @@ class UserDataSource {
     }
   }
 
-  Future<UserWithTokens> refresh(String baseUrl, String token) async {
+  @override
+  Future<UserWithTokens> refresh(String token) async {
     final response = await http.post(
       Uri.parse("$baseUrl/refresh"),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
