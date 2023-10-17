@@ -14,14 +14,19 @@ String durationToString(Duration duration) {
 }
 
 class Session {
+  final _difficulty = 0.obs;
   final correct = 0.obs;
   final current = 0.obs;
   final start = DateTime.now().obs;
   final _elapsed = Duration.zero.obs;
   final List<Question> questions = [];
 
+  int get difficulty => _difficulty.value;
   Duration get totalTime => DateTime.now().difference(start.value);
   String get elapsedString => durationToString(_elapsed.value);
+  Duration get targetTime => Duration(seconds: 30 + 15 * _difficulty.value);
+
+  set difficulty(int value) => _difficulty.value = value;
 
   Session() {
     Timer.periodic(
@@ -35,6 +40,7 @@ class Session {
     current.value = 0;
     questions.clear();
     start.value = DateTime.now();
+    _elapsed.value = Duration.zero;
   }
 
   SessionRecord intoRecord() {
@@ -58,14 +64,11 @@ class SessionRecord {
   factory SessionRecord.fromJson(Map<String, dynamic> json) => SessionRecord(
         Duration(seconds: json["total_time"]),
         json["correct"],
-        (json["questions"] as List<dynamic>)
-            .map((json) => Question.fromJson(json))
-            .toList(),
+        (json["questions"] as List<dynamic>).map((json) => Question.fromJson(json)).toList(),
       );
 
   @override
-  String toString() =>
-      "Session(time: ${durationToString(totalTime)}, correct: $correct)";
+  String toString() => "Session(time: ${durationToString(totalTime)}, correct: $correct)";
 }
 
 class Question {
@@ -103,8 +106,7 @@ class Question {
     return Question(first, second, op, 0);
   }
 
-  Map<String, dynamic> toJson() =>
-      {"question": question, "expected": expected, "answer": answer};
+  Map<String, dynamic> toJson() => {"question": question, "expected": expected, "answer": answer};
 
   factory Question.fromJson(Map<String, dynamic> json) => Question.from(
         json["question"],
@@ -115,7 +117,7 @@ class Question {
     final power = 1 + (difficulty + 1) ~/ 2;
     final max = pow(10, power).toInt();
     final operators = Operator.values.take(1 + difficulty ~/ 2);
-    
+
     return (max, operators.toList());
   }
 }

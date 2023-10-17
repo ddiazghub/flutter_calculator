@@ -9,7 +9,6 @@ import 'package:loggy/loggy.dart';
 enum AnswerResult { Correct, Wrong, LevelUp, SessionReset }
 
 class CalculatorController extends GetxController {
-  final _difficulty = 0.obs;
   final _question = Question(0, 0, Operator.Add, 0).obs;
   final session = Session();
   final input = <int>[].obs;
@@ -18,10 +17,10 @@ class CalculatorController extends GetxController {
     reset(0);
   }
 
-  int get difficulty => _difficulty.value;
+  int get difficulty => session.difficulty;
   Question get question => _question.value;
 
-  set difficulty(int value) => _difficulty.value = value;
+  set difficulty(int value) => session.difficulty = value;
 
   void next() {
     _question.value = Question.random(difficulty);
@@ -80,7 +79,7 @@ class CalculatorController extends GetxController {
 
     if (session.current.value == 5) {
       if (difficulty < 5) {
-        if (session.correct > 4 && session.totalTime < Duration(seconds: 30 + 15 * difficulty)) {
+        if (session.correct > 4 && session.totalTime < session.targetTime) {
           difficulty++;
           sessionReset();
 

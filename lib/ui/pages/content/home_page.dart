@@ -1,115 +1,50 @@
+import 'dart:io';
+
+import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
+import 'package:f_web_authentication/ui/pages/content/calculator_page.dart';
+import 'package:f_web_authentication/ui/pages/content/history_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:loggy/loggy.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
 
   static const LOGOUT = Key("ButtonHomeLogOff");
   static const USER = Key("ButtonHomeUser");
+  static const START = Key("ButtonHomeStart");
+  static const HISTORY = Key("ButtonHomeHistory");
 
   final UserUseCase useCase = Get.find();
   final CalculatorController calculator = Get.find();
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackbar(
-      BuildContext context, String text, Color color) {
-    return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(milliseconds: 1500),
-        backgroundColor: color,
-        content: Text(text),
-      ),
-    );
-  }
-
-  void _showPopup(BuildContext context) {
+  static void showPopup(BuildContext context, User user) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Datos de Usuario'),
+          title: const Text('User Data'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Email: ${useCase.user!.email}'),
-              Text('Colegio: ${useCase.user!.school}'),
-              Text('Grado: ${useCase.user!.grade}'),
+              Text('Email: ${user.email}'),
+              Text('School: ${user.school}'),
+              Text('Grade: ${user.grade}'),
             ],
           ),
           actions: [
             ElevatedButton(
               child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the pop-up
-              },
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         );
       },
     );
-  }
-
-  List<Widget> renderButtons(BuildContext context) {
-    final buttons = Iterable.generate(
-      9,
-      (i) => ElevatedButton(
-        child: Text((i + 1).toString()),
-        onPressed: () => calculator.pushInput((i + 1)),
-      ),
-    ).toList();
-
-    buttons.addAll([
-      ElevatedButton(
-        child: const Text("0"),
-        onPressed: () => calculator.pushInput(0),
-      ),
-      ElevatedButton(
-        child: const Text("DEL"),
-        onPressed: () => calculator.popInput(),
-      ),
-      ElevatedButton(
-        child: const Text("GO"),
-        onPressed: () {
-          switch (calculator.submit()) {
-            case AnswerResult.Correct:
-              showSnackbar(
-                context,
-                "Correct answer",
-                Colors.green,
-              );
-              break;
-            case AnswerResult.Wrong:
-              showSnackbar(
-                context,
-                "Wrong answer",
-                Colors.red,
-              );
-              break;
-            case AnswerResult.LevelUp:
-              showSnackbar(
-                context,
-                "Level up, difficulty will increase",
-                Colors.green,
-              );
-              break;
-            case AnswerResult.SessionReset:
-              showSnackbar(
-                context,
-                "Level up failed, difficulty will stay the same",
-                Colors.red,
-              );
-          }
-
-          calculator.clearInput();
-        },
-      ),
-    ]);
-
-    return buttons;
   }
 
   @override
@@ -119,7 +54,7 @@ class HomePage extends StatelessWidget {
         title: const Text("Home"),
         actions: [
           IconButton(
-            key: HomePage.LOGOUT,
+            key: LOGOUT,
             onPressed: () async {
               await useCase.logOut();
               await Get.off(() => const LoginPage());
@@ -128,15 +63,9 @@ class HomePage extends StatelessWidget {
           ),
           IconButton(
             key: USER,
-            onPressed: () {
-              _showPopup(context);
-            },
+            onPressed: () => showPopup(context, useCase.user!),
             icon: const Icon(Icons.person_2_outlined),
           ),
-          IconButton(
-            onPressed: () => logInfo(useCase.user!.history),
-            icon: const Icon(Icons.history),
-          )
         ],
       ),
       body: Center(
@@ -149,11 +78,10 @@ class HomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Expanded(
-                      flex: 2,
                       child: Center(
                         child: Text(
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 23,
                           ),
                           key: const Key('TextHomeHello'),
                           "Hello ${useCase.user!.email}",
@@ -161,99 +89,81 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: Center(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "Difficulty: ${calculator.difficulty}",
-                                ),
-                              ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Center(
+                            child: Text('School: ${useCase.user!.school}'),
+                          ),
+                          Center(
+                            child: Text('Grade: ${useCase.user!.grade}'),
+                          ),
+                          Center(
+                            child: Text(
+                              "Current Difficulty: ${calculator.difficulty}",
                             ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "Answers: ${calculator.session.current}",
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "Correct: ${calculator.session.correct}",
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "Time: ${calculator.session.elapsedString}",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(
-                      child: Center(
-                        child: Row(
-                          children: [
-                            const Expanded(
-                              child: Center(child: Text("Question:")),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  calculator.question.question,
+                      flex: 3,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(10),
+                            child: Center(
+                              child: ElevatedButton(
+                                key: START,
+                                child: const SizedBox(
+                                  width: 250,
+                                  child: Center(child: Text('Start')),
                                 ),
+                                onPressed: () async {
+                                  calculator.reset(useCase.user!.difficulty);
+                                  await Get.to(() => CalculatorPage());
+                                },
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Row(
-                          children: [
-                            const Expanded(
-                              child: Center(child: Text("Your answer:")),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  calculator.input.isNotEmpty
-                                      ? calculator.input.join()
-                                      : "0",
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(10),
+                            child: Center(
+                              child: ElevatedButton(
+                                key: HISTORY,
+                                child: const SizedBox(
+                                  width: 250,
+                                  child: Center(child: Text('History')),
                                 ),
+                                onPressed: () => Get.to(() => HistoryPage()),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(10),
+                            child: Center(
+                              child: ElevatedButton(
+                                child: const SizedBox(
+                                  width: 250,
+                                  child: Center(child: Text('Exit')),
+                                ),
+                                onPressed: () {
+                                  if (Platform.isAndroid) {
+                                    SystemNavigator.pop();
+                                  } else if (Platform.isIOS) {
+                                    exit(0);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            GridView.count(
-              primary: false,
-              padding: const EdgeInsets.all(20),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 3,
-              shrinkWrap: true,
-              children: renderButtons(context),
             ),
           ],
         ),
