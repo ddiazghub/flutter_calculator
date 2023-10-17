@@ -56,8 +56,8 @@ class SessionData(BaseModel):
 
 class UserWithTokens(BaseModel):
     access_token: str
-    refresh_token: str = "bearer"
-    token_type: str
+    refresh_token: str
+    token_type: str = "bearer"
     user: DisplayUser
 
 

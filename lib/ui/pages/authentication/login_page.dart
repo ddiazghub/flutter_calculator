@@ -1,8 +1,9 @@
 import 'package:f_web_authentication/domain/models/credentials.dart';
+import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
+import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
-import '../../controller/user_controller.dart';
 import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,13 +22,14 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final controllerEmail = TextEditingController(text: 'a@a.com');
   final controllerPassword = TextEditingController(text: '123456');
-  UserController controller = Get.find();
+  UserUseCase useCase = Get.find();
 
   Future<void> _login(String theEmail, String thePassword) async {
     logInfo('_login $theEmail $thePassword');
 
     // try {
-      await controller.login(Credentials(theEmail, thePassword));
+    await useCase.login(Credentials(theEmail, thePassword));
+    Get.off(() => HomePage());
     // } catch (err) {
     //   Get.snackbar(
     //     "Login",

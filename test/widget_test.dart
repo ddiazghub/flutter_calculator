@@ -5,11 +5,11 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:f_web_authentication/domain/repositories/local_repository.dart';
 import 'package:f_web_authentication/domain/repositories/repository.dart';
-import 'package:f_web_authentication/domain/use_case/authentication_usecase.dart';
+import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
 import 'package:f_web_authentication/helpers.dart';
 import 'package:f_web_authentication/main.dart';
-import 'package:f_web_authentication/ui/controller/user_controller.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:f_web_authentication/ui/pages/authentication/signup.dart';
@@ -22,8 +22,8 @@ import 'package:loggy/loggy.dart';
 void main() {
   setUp(() {
     Get.put(UserRepository("http://192.168.1.8:8000"));
+    Get.put(LocalRepository());
     Get.put(UserUseCase());
-    Get.put(UserController());
     Get.put(CalculatorController());
   });
 
@@ -55,9 +55,9 @@ void main() {
     await tester.tap(submitButton);
     await tester.pumpAndSettle();
 
-    final auth = Get.find<UserController>();
+    final auth = Get.find<UserUseCase>();
 
-    logInfo("Logged: ${auth.isLogged}");
+    logInfo("Logged: ${auth.isLoggedIn}");
     
     // Expect the signUp to be successful and the home page to be rendered;
     final homeText = find.text("Hello $email");

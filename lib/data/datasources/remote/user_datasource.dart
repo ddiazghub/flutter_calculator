@@ -42,7 +42,7 @@ class UserDataSource {
     logInfo(response.statusCode);
 
     if (response.statusCode == 200) {
-      logInfo(jsonDecode(response.body));
+      logInfo(response.body);
       final user = UserWithTokens.fromJson(jsonDecode(response.body));
 
       return Future.value(user);
@@ -67,6 +67,8 @@ class UserDataSource {
     logInfo(response.statusCode);
 
     if (response.statusCode == 200) {
+      logInfo(response.body);
+
       return Future.value(true);
     } else {
       logError(response.body);
@@ -79,12 +81,13 @@ class UserDataSource {
       Uri.parse("$baseUrl/refresh"),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode({"refresh_token": token}),
-    );
+    ).timeout(const Duration(seconds: 2));
 
     logInfo(response.statusCode);
 
     if (response.statusCode == 200) {
-      logInfo(jsonDecode(response.body));
+      logInfo(response.body);
+
       final user = UserWithTokens.fromJson(jsonDecode(response.body));
 
       return Future.value(user);

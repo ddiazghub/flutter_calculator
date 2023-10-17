@@ -138,6 +138,8 @@ async def me(authorization: Annotated[str | None, Header()] = None) -> DisplayUs
 @app.post("/refresh")
 async def refresh_token(data: RefreshScheme) -> UserWithTokens:
     try:
+        print(data.model_dump())
+
         decoded_token = jwt.decode(
             data.refresh_token, JWT_SECRET, algorithms=[JWT_ALGORITHM]
         )
@@ -158,7 +160,7 @@ async def refresh_token(data: RefreshScheme) -> UserWithTokens:
 
         return UserWithTokens(
             access_token=access_token,
-            token_type="bearer",
+            refresh_token=data.refresh_token,
             user=DisplayUser.from_user(user),
         )
     except Exception as e:

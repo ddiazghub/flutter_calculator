@@ -1,5 +1,6 @@
-import 'package:f_web_authentication/ui/controller/user_controller.dart';
+import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
+import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
@@ -10,7 +11,7 @@ class HomePage extends StatelessWidget {
   static const LOGOUT = Key("ButtonHomeLogOff");
   static const USER = Key("ButtonHomeUser");
 
-  final UserController controller = Get.find();
+  final UserUseCase useCase = Get.find();
   final CalculatorController calculator = Get.find();
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackbar(
@@ -34,9 +35,9 @@ class HomePage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Email: ${controller.user!.email}'),
-              Text('Colegio: ${controller.user!.school}'),
-              Text('Grado: ${controller.user!.grade}'),
+              Text('Email: ${useCase.user!.email}'),
+              Text('Colegio: ${useCase.user!.school}'),
+              Text('Grado: ${useCase.user!.grade}'),
             ],
           ),
           actions: [
@@ -119,7 +120,10 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             key: HomePage.LOGOUT,
-            onPressed: () => controller.logOut(),
+            onPressed: () async {
+              await useCase.logOut();
+              await Get.off(() => const LoginPage());
+            },
             icon: const Icon(Icons.logout),
           ),
           IconButton(
@@ -130,7 +134,7 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.person_2_outlined),
           ),
           IconButton(
-            onPressed: () => logInfo(controller.user!.history),
+            onPressed: () => logInfo(useCase.user!.history),
             icon: const Icon(Icons.history),
           )
         ],
@@ -152,7 +156,7 @@ class HomePage extends StatelessWidget {
                             fontSize: 20,
                           ),
                           key: const Key('TextHomeHello'),
-                          "Hello ${controller.user!.email}",
+                          "Hello ${useCase.user!.email}",
                         ),
                       ),
                     ),

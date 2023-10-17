@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:f_web_authentication/domain/models/operator.dart';
 import 'package:f_web_authentication/domain/models/session.dart';
-import 'package:f_web_authentication/ui/controller/user_controller.dart';
+import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
@@ -53,7 +53,13 @@ class CalculatorController extends GetxController {
 
   void sessionReset() {
     final record = session.intoRecord();
-    Get.find<UserController>().updateData(difficulty, record);
+
+    try {
+      Get.find<UserUseCase>().update(difficulty, record);
+    } catch (e) {
+      logInfo("No connection to server");
+    }
+
     session.reset();
     next();
   }

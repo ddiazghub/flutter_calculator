@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:f_web_authentication/domain/models/session.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:f_web_authentication/domain/repositories/local_repository.dart';
+import 'package:get/get.dart';
 
 class User {
   final String email;
@@ -90,25 +89,9 @@ class UserWithTokens {
     );
   }
 
-  void save() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString("user", jsonEncode(user.toJson()));
-    prefs.setString("access_token", accessToken);
-    prefs.setString("refresh_token", refreshToken);
-  }
+  Future<void> save() async => Get.find<LocalRepository>().save(this);
 
-  static Future<UserWithTokens?> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString("user");
-    final accessToken = prefs.getString("access_token");
-    final refreshToken = prefs.getString("refresh_token");
+  static Future<UserWithTokens?> load() async => Get.find<LocalRepository>().load();
 
-    if (userJson == null || refreshToken == null) {
-      return null;
-    }
-
-    final user = User.fromJson(jsonDecode(userJson));
-
-    return UserWithTokens(accessToken!, refreshToken, user);
-  }
+  static Future<void> clear() async => Get.find<LocalRepository>().clear();
 }

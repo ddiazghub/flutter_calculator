@@ -1,9 +1,9 @@
 import 'package:f_web_authentication/domain/models/user.dart';
-import 'package:f_web_authentication/ui/central.dart';
+import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
+import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
-import '../../controller/user_controller.dart';
 import 'package:intl/intl.dart';
 
 class SignUp extends StatefulWidget {
@@ -31,12 +31,12 @@ class _FirebaseSignUpState extends State<SignUp> {
   final controllerSchool = TextEditingController(text: 'Royal school');
   final controllerGrade = TextEditingController(text: '11');
   final controllerBirth = TextEditingController(text: '2000-1-1');
-  UserController controller = Get.find();
+  UserUseCase useCase = Get.find();
 
   Future<void> _signup(User user, String password) async {
     // try {
-    await controller.signUp(user, password);
-    Get.off(() => const Central());
+    await useCase.signUp(user, password);
+    Get.offAll(() => HomePage());
     // } catch (err) {
     //   logError('SignUp error $err');
     //   Get.snackbar(
@@ -181,7 +181,7 @@ class _FirebaseSignUpState extends State<SignUp> {
                     onTap: () => _selectDate(
                         context), // Open the date picker when the field is tapped
                   ),
-                  TextButton(
+                  OutlinedButton(
                     key: SignUp.SUBMIT,
                     onPressed: () async {
                       final form = _formKey.currentState;
