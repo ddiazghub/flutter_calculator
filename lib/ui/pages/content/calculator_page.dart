@@ -31,6 +31,7 @@ class CalculatorPage extends StatelessWidget {
     final buttons = Iterable.generate(
       9,
       (i) => ElevatedButton(
+        key: Key("b${i + 1}"),
         child: Text((i + 1).toString()),
         onPressed: () => calculator.pushInput((i + 1)),
       ),
@@ -38,6 +39,7 @@ class CalculatorPage extends StatelessWidget {
 
     buttons.addAll([
       ElevatedButton(
+        key: const Key("ZeroB"),
         child: const Text("0"),
         onPressed: () => calculator.pushInput(0),
       ),

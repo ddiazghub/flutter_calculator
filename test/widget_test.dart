@@ -13,6 +13,7 @@ import 'package:f_web_authentication/main.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:f_web_authentication/ui/pages/authentication/signup.dart';
+import 'package:f_web_authentication/ui/pages/content/calculator_page.dart';
 import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -226,6 +227,27 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Datos de Usuario'), findsOneWidget);
+  });
+
+  testWidgets('Testing Buttons', (WidgetTester tester) async {
+    await tester.pumpWidget(GetMaterialApp(home: CalculatorPage()));
+
+    final zeroButton = find.byKey(const Key("ZeroB"));
+
+    await tester.tap(zeroButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('0'), findsOneWidget);
+
+    for (int i = 0; i < 10; i++) {
+      final button = find.byKey(
+        Key("b${i + 1}"),
+      );
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+
+      expect(find.text('${i + 1}'), findsOneWidget);
+    }
   });
 }
 
