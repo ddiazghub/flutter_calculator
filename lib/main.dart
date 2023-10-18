@@ -8,6 +8,8 @@ import 'package:loggy/loggy.dart';
 import 'domain/repositories/repository.dart';
 import 'domain/use_case/user_usecase.dart';
 
+const baseUrl = "http://ip172-18-0-94-cknvjdggftqg00fnfjo0-8000.direct.labs.play-with-docker.com";
+
 void main() {
   Loggy.initLoggy(
     logPrinter: const PrettyPrinter(
@@ -15,7 +17,7 @@ void main() {
     ),
   );
 
-  Get.put(UserRepository.remote( "http://192.168.1.3:8000"));
+  Get.put(UserRepository.remote(baseUrl));
   Get.put(LocalRepository());
   Get.put(UserUseCase());
   Get.put(CalculatorController());

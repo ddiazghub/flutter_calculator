@@ -27,10 +27,11 @@ class CalculatorPage extends StatelessWidget {
     );
   }
 
-  List<Widget> renderButtons(BuildContext context) {
+  List<Widget> renderButtons(BuildContext context, bool landscape) {
     final buttons = Iterable.generate(
       9,
       (i) => ElevatedButton(
+        key: Key("b${i + 1}"),
         child: Text((i + 1).toString()),
         onPressed: () => calculator.pushInput((i + 1)),
       ),
@@ -38,16 +39,17 @@ class CalculatorPage extends StatelessWidget {
 
     buttons.addAll([
       ElevatedButton(
+        key: const Key("b0"),
         child: const Text("0"),
         onPressed: () => calculator.pushInput(0),
       ),
       ElevatedButton(
-        child: const Text("DEL"),
+        child: landscape ? const Icon(Icons.arrow_back) : const Text("DEL"),
         onPressed: () => calculator.popInput(),
       ),
       ElevatedButton(
         key: GO,
-        child: const Text("GO"),
+        child: landscape ? const Icon(Icons.check) : const Text("GO"),
         onPressed: () async {
           final difficulty = calculator.difficulty;
 
@@ -98,6 +100,10 @@ class CalculatorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewport = MediaQuery.of(context).size;
+    final landscape = viewport.width > viewport.height;
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Game"),
@@ -206,6 +212,7 @@ class CalculatorPage extends StatelessWidget {
                             Expanded(
                               child: Center(
                                 child: Text(
+                                  key: const Key("inp"),
                                   style: const TextStyle(
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
@@ -229,9 +236,9 @@ class CalculatorPage extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
-              crossAxisCount: 3,
+              crossAxisCount: landscape ? 12 : 3,
               shrinkWrap: true,
-              children: renderButtons(context),
+              children: renderButtons(context, landscape),
             ),
           ],
         ),
