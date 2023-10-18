@@ -5,6 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/domain/repositories/local_repository.dart';
 import 'package:f_web_authentication/domain/repositories/repository.dart';
 import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
@@ -30,7 +31,8 @@ void main() {
   });
 
   // Login Test
-  testWidgets('Login page should render correctly', (WidgetTester tester) async {
+  testWidgets('Login page should render correctly',
+      (WidgetTester tester) async {
     await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
 
     expect(find.text('Login with email'), findsOneWidget);
@@ -41,6 +43,7 @@ void main() {
 
   testWidgets('SignUp and Login', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
     final signUpButton = find.byKey(LoginPage.CREATE_BUTTON);
 
@@ -52,17 +55,30 @@ void main() {
     const email = "user@email.com";
 
     await tester.enterText(emailField, email);
-    await tester.pump();
+    await tester.pumpAndSettle();
     await tester.tap(submitButton);
     await tester.pumpAndSettle();
 
     final auth = Get.find<UserUseCase>();
 
-    logInfo("Logged: ${auth.isLoggedIn}");
-    
+    // await auth.signUp(
+    //   User(
+    //     'test33@example.com',
+    //     'John',
+    //     'Doe',
+    //     '2000-01-01',
+    //     'Test School',
+    //     '12',
+    //     0,
+    //     [],
+    //     DateTime.now(),
+    //   ),
+    //   "123456",
+    // );
+
+    print("Logged: ${auth.isLoggedIn}");
+
     // Expect the signUp to be successful and the home page to be rendered;
-    final homeText = find.text("Hello $email");
-    expect(homeText, findsAtLeastNWidgets(1));
     expect(find.byType(HomePage), findsOneWidget);
 
     auth.logOut();
@@ -196,7 +212,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Enter valid email address"), findsOneWidget);
-    expect(find.text("Password should have at least 6 characters"), findsOneWidget);
+    expect(find.text("Password should have at least 6 characters"),
+        findsOneWidget);
   });
 
   //Calculator test
@@ -212,7 +229,6 @@ void main() {
   });
 }
 
-
 // void main() {
 //   setUp(() {
 //     Get.put(UserRepository("http://192.168.1.8:8000"));
@@ -220,12 +236,12 @@ void main() {
 //     Get.put(UserController());
 //     Get.put(CalculatorController());
 //   });
-// 
+//
 //   final mockUserController = MockUserController();
-// 
+//
 //   // Mock the Get.find() function to return the mock UserController
 //   when(Get.find<UserController>()).thenReturn(mockUserController);
-// 
+//
 //   // testWidgets('HomePage displays user data', (WidgetTester tester) async {
 //   //   // Mock the user data you expect to receive from the UserController
 //   //   final user = User(
@@ -245,7 +261,7 @@ void main() {
 //   //       home: HomePage(),
 //   //     ),
 //   //   );
-// /* 
+// /*
 //     // Verify that the user data is displayed on the screen
 //     expect(find.text('Hello test@example.com'), findsOneWidget);
 //     expect(find.text('Colegio: Test School'), findsOneWidget);

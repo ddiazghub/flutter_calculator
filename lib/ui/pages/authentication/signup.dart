@@ -36,9 +36,10 @@ class _FirebaseSignUpState extends State<SignUp> {
   Future<void> _signup(User user, String password) async {
     try {
       await useCase.signUp(user, password);
+      print('SignUp success');
       Get.offAll(() => HomePage());
     } catch (err) {
-      logError('SignUp error $err');
+      print('SignUp error $err');
       Get.snackbar(
         "Sign Up",
         err.toString(),
