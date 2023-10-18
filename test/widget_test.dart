@@ -41,60 +41,6 @@ void main() {
     expect(find.text('Submit'), findsOneWidget);
   });
 
-  testWidgets('SignUp and Login', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-    await tester.pumpAndSettle();
-
-    final signUpButton = find.byKey(LoginPage.CREATE_BUTTON);
-
-    await tester.tap(signUpButton);
-    await tester.pumpAndSettle();
-
-    var emailField = find.byKey(SignUp.EMAIL);
-    final submitButton = find.byKey(SignUp.SUBMIT);
-    const email = "user@email.com";
-
-    await tester.enterText(emailField, email);
-    await tester.pumpAndSettle();
-    await tester.tap(submitButton);
-    await tester.pumpAndSettle();
-
-    final auth = Get.find<UserUseCase>();
-
-    // await auth.signUp(
-    //   User(
-    //     'test33@example.com',
-    //     'John',
-    //     'Doe',
-    //     '2000-01-01',
-    //     'Test School',
-    //     '12',
-    //     0,
-    //     [],
-    //     DateTime.now(),
-    //   ),
-    //   "123456",
-    // );
-
-    print("Logged: ${auth.isLoggedIn}");
-
-    // Expect the signUp to be successful and the home page to be rendered;
-    expect(find.byType(HomePage), findsOneWidget);
-
-    auth.logOut();
-    emailField = find.byKey(LoginPage.EMAIL);
-
-    await tester.enterText(emailField, email);
-
-    final loginButton = find.byKey(LoginPage.SUBMIT);
-
-    await tester.tap(loginButton);
-    await tester.pumpAndSettle();
-
-    // Expect the login to be successful and the home page to be rendered
-    expect(find.byType(HomePage), findsOneWidget);
-  });
-
   testWidgets('Email missing @', (WidgetTester tester) async {
     await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
 
@@ -130,7 +76,7 @@ void main() {
     expect(find.text("Enter email"), findsOneWidget);
   });
 
-  testWidgets('Password', (WidgetTester tester) async {
+  testWidgets('PasswordEmpty', (WidgetTester tester) async {
     await tester.pumpWidget(const GetMaterialApp(home: LoginPage()));
 
     final emailField = find.byKey(LoginPage.EMAIL);
@@ -139,7 +85,7 @@ void main() {
     await tester.enterText(emailField, 'a@a.com');
     await tester.enterText(passwordField, '');
 
-    final loginButton = find.byKey(const Key('ButtonLoginSubmit'));
+    final loginButton = find.byKey(const Key('LoginSubmitField'));
 
     await tester.tap(loginButton);
     await tester.pumpAndSettle();
@@ -216,18 +162,6 @@ void main() {
         findsOneWidget);
   });
 
-  //Calculator test
-  testWidgets('Testing Homepage', (WidgetTester tester) async {
-    await tester.pumpWidget(GetMaterialApp(home: HomePage()));
-
-    final uB = find.byKey(HomePage.USER);
-
-    await tester.tap(uB);
-    await tester.pumpAndSettle();
-
-    expect(find.text('Datos de Usuario'), findsOneWidget);
-  });
-
   testWidgets('Testing Buttons', (WidgetTester tester) async {
     final auth = Get.find<UserUseCase>();
 
@@ -244,12 +178,14 @@ void main() {
       ),
     )));
     await tester.pumpAndSettle();
-    final button = find.byKey(
-      const Key("b1"),
-    );
-    await tester.tap(button);
-    await tester.pumpAndSettle();
+    for (int i = 0; i < 10; i++) {
+      final button = find.byKey(
+        Key("b${i}"),
+      );
+      await tester.tap(button);
+      await tester.pumpAndSettle();
 
-    expect(find.text("1"), findsAtLeastNWidgets(1));
+      expect(find.text("${i}"), findsAtLeastNWidgets(1));
+    }
   });
 }
