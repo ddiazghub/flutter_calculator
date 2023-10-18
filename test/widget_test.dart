@@ -6,7 +6,6 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:f_web_authentication/domain/models/credentials.dart';
-import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/domain/repositories/local_repository.dart';
 import 'package:f_web_authentication/domain/repositories/repository.dart';
 import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
@@ -19,7 +18,6 @@ import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:loggy/loggy.dart';
 
 import 'fake_local_datasource.dart';
 import 'fake_user_datasource.dart';
@@ -247,7 +245,7 @@ void main() {
     )));
     await tester.pumpAndSettle();
     final button = find.byKey(
-      Key("b1"),
+      const Key("b1"),
     );
     await tester.tap(button);
     await tester.pumpAndSettle();
@@ -255,42 +253,3 @@ void main() {
     expect(find.text("1"), findsAtLeastNWidgets(1));
   });
 }
-
-// void main() {
-//   setUp(() {
-//     Get.put(UserRepository("http://192.168.1.8:8000"));
-//     Get.put(UserUseCase());
-//     Get.put(UserController());
-//     Get.put(CalculatorController());
-//   });
-//
-//   final mockUserController = MockUserController();
-//
-//   // Mock the Get.find() function to return the mock UserController
-//   when(Get.find<UserController>()).thenReturn(mockUserController);
-//
-//   // testWidgets('HomePage displays user data', (WidgetTester tester) async {
-//   //   // Mock the user data you expect to receive from the UserController
-//   //   final user = User(
-//   //     email: 'test@example.com',
-//   //     firstName: 'John',
-//   //     lastName: 'Doe',
-//   //     birthday: '2000-01-01',
-//   //     school: 'Test School',
-//   //     grade: '12',
-//   //     difficulty: 5,
-//   //     history: [],
-//   //   );
-//   //   when(mockUserController.user).thenReturn(user);
-//   //   // Build the widget
-//   //   await tester.pumpWidget(
-//   //     MaterialApp(
-//   //       home: HomePage(),
-//   //     ),
-//   //   );
-// /*
-//     // Verify that the user data is displayed on the screen
-//     expect(find.text('Hello test@example.com'), findsOneWidget);
-//     expect(find.text('Colegio: Test School'), findsOneWidget);
-//     expect(find.text('Grado: 12'), findsOneWidget);
-//   }); */
