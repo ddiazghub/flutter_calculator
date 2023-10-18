@@ -3,6 +3,7 @@ from typing import Annotated, List
 
 import jwt
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from model import DisplayUser, UserWithTokens, LoginSchema, SessionData, User, RefreshScheme
 
 app = FastAPI()
@@ -10,6 +11,13 @@ app = FastAPI()
 # Create a list to store users
 users_db: List[User] = []
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Define an endpoint to register a user
 @app.post("/register")
