@@ -39,7 +39,7 @@ class CalculatorPage extends StatelessWidget {
 
     buttons.addAll([
       ElevatedButton(
-        key: const Key("ZeroB"),
+        key: const Key("b0"),
         child: const Text("0"),
         onPressed: () => calculator.pushInput(0),
       ),
@@ -208,6 +208,7 @@ class CalculatorPage extends StatelessWidget {
                             Expanded(
                               child: Center(
                                 child: Text(
+                                  key: const Key("inp"),
                                   style: const TextStyle(
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
