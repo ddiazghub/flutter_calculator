@@ -5,6 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:f_web_authentication/domain/models/credentials.dart';
 import 'package:f_web_authentication/domain/models/user.dart';
 import 'package:f_web_authentication/domain/repositories/local_repository.dart';
 import 'package:f_web_authentication/domain/repositories/repository.dart';
@@ -13,6 +14,7 @@ import 'package:f_web_authentication/main.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:f_web_authentication/ui/pages/authentication/signup.dart';
+import 'package:f_web_authentication/ui/pages/content/calculator_page.dart';
 import 'package:f_web_authentication/ui/pages/content/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -226,6 +228,31 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Datos de Usuario'), findsOneWidget);
+  });
+
+  testWidgets('Testing Buttons', (WidgetTester tester) async {
+    final auth = Get.find<UserUseCase>();
+
+    await auth.login(
+      Credentials("test@example.com", "123456"),
+    );
+
+    await tester.pumpWidget(GetMaterialApp(
+        home: SingleChildScrollView(
+      child: SizedBox(
+        width: 1000,
+        height: 1000,
+        child: CalculatorPage(),
+      ),
+    )));
+    await tester.pumpAndSettle();
+    final button = find.byKey(
+      Key("b1"),
+    );
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+
+    expect(find.text("1"), findsAtLeastNWidgets(1));
   });
 }
 
