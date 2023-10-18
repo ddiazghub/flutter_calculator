@@ -121,7 +121,7 @@ void main() {
     await tester.enterText(emailField, '');
     await tester.enterText(passwordField, '123456');
 
-    final loginButton = find.byKey(const Key('ButtonLoginSubmit'));
+    final loginButton = find.byKey(const Key('LoginSubmitField'));
 
     await tester.tap(loginButton);
 
@@ -156,7 +156,7 @@ void main() {
     await tester.enterText(emailField, 'a@a.com');
     await tester.enterText(passwordField, '1');
 
-    final loginButton = find.byKey(const Key('ButtonLoginSubmit'));
+    final loginButton = find.byKey(const Key('LoginSubmitField'));
 
     await tester.tap(loginButton);
 
