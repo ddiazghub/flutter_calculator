@@ -100,9 +100,8 @@ class UserWithTokens {
 }
 
 class UserWithPassword {
-  final User user;
+  User user;
   final String password;
-
   String get email => user.email;
   String get firstName => user.firstName;
   String get lastName => user.lastName;
@@ -112,8 +111,6 @@ class UserWithPassword {
   int get difficulty => user.difficulty;
   List<SessionRecord> get history => user.history;
   DateTime get updatedAt => user.updatedAt;
-
-  set user(User value) => user = value;
 
   UserWithPassword(this.user, this.password);
 

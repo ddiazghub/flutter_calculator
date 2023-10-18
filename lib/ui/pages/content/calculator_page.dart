@@ -11,6 +11,7 @@ class CalculatorPage extends StatelessWidget {
 
   static const LOGOUT = Key("ButtonCalculatorLogOff");
   static const USER = Key("ButtonCalculatorUser");
+  static const GO = Key("ButtonCalculatorGo");
 
   final UserUseCase useCase = Get.find();
   final CalculatorController calculator = Get.find();
@@ -45,6 +46,7 @@ class CalculatorPage extends StatelessWidget {
         onPressed: () => calculator.popInput(),
       ),
       ElevatedButton(
+        key: GO,
         child: const Text("GO"),
         onPressed: () async {
           final difficulty = calculator.difficulty;
@@ -98,7 +100,7 @@ class CalculatorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
+        title: const Text("Game"),
         actions: [
           IconButton(
             key: LOGOUT,

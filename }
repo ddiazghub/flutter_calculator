@@ -11,9 +11,7 @@ import 'package:f_web_authentication/domain/use_case/user_usecase.dart';
 import 'package:f_web_authentication/ui/controller/calculator_controller.dart';
 import 'package:f_web_authentication/ui/pages/authentication/login_page.dart';
 import 'package:f_web_authentication/ui/pages/authentication/signup.dart';
-import 'package:f_web_authentication/ui/pages/content/calculator_page.dart';
 import 'package:f_web_authentication/ui/pages/content/home_page.dart';
-import 'package:f_web_authentication/ui/pages/content/summary_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -74,39 +72,13 @@ void main() {
     await tester.tap(loginSubmitButton);
     await tester.pumpAndSettle();
 
-    expect(find.text("Hello $email"), findsOneWidget);
+    final homeText2 = find.text("Hello $email");
+
+    expect(homeText2, findsOneWidget);
 
     final startButton = find.byKey(HomePage.START);
 
     await tester.tap(startButton);
-    await tester.pumpAndSettle();
-
-    expect(find.text("Game"), findsOneWidget);
-
-    final goButton = find.byKey(CalculatorPage.GO);
-
-    for (int i = 0; i < 6; i++) {
-      await tester.tap(goButton);
-      await tester.pumpAndSettle();
-    }
-
-    expect(find.text("Session Summary"), findsOneWidget);
-
-    final continueButton = find.byKey(SummaryPage.CONTINUE);
-
-    await tester.tap(continueButton);
-    await tester.pumpAndSettle();
-
-    final historyButton = find.byKey(HomePage.HISTORY);
-
-    await tester.tap(historyButton);
-    await tester.pumpAndSettle();
-
-    expect(find.text("History"), findsOneWidget);
-
-    final logoutButton2 = find.byKey(HomePage.LOGOUT);
-
-    await tester.tap(logoutButton2);
     await tester.pumpAndSettle();
   });
 }

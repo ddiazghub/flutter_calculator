@@ -1,7 +1,8 @@
 import 'package:f_web_authentication/data/datasources/local/local_datasource.dart';
 import 'package:f_web_authentication/domain/models/user.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-class FakeLocalDataSource implements ILocalDataSource {
+class FakeLocalDataSource extends Fake implements ILocalDataSource {
   UserWithTokens? session;
 
   @override
