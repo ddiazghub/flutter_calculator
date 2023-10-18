@@ -72,95 +72,86 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Obx(
-              () => Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          style: const TextStyle(fontSize: 23),
-                          key: const Key('TextHomeHello'),
-                          "Hello ${useCase.user!.email}",
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Center(
-                            child: Text('School: ${useCase.user!.school}'),
-                          ),
-                          Center(
-                            child: Text('Grade: ${useCase.user!.grade}'),
-                          ),
-                          Center(
-                            child: Text(
-                              "Current Difficulty: ${calculator.difficulty}",
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Center(
-                              child: ElevatedButton(
-                                key: START,
-                                child: const SizedBox(
-                                  width: 250,
-                                  child: Center(child: Text('Start')),
-                                ),
-                                onPressed: () async {
-                                  calculator.reset(useCase.user!.difficulty);
-                                  await Get.to(() => CalculatorPage());
-                                },
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Center(
-                              child: ElevatedButton(
-                                key: HISTORY,
-                                child: const SizedBox(
-                                  width: 250,
-                                  child: Center(child: Text('History')),
-                                ),
-                                onPressed: () => Get.to(() => HistoryPage()),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Center(
-                              child: ElevatedButton(
-                                child: const SizedBox(
-                                  width: 250,
-                                  child: Center(child: Text('Exit')),
-                                ),
-                                onPressed: () {
-                                  if (Platform.isAndroid) {
-                                    SystemNavigator.pop();
-                                  } else if (Platform.isIOS) {
-                                    exit(0);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+            Expanded(
+              child: Center(
+                child: Text(
+                  style: const TextStyle(fontSize: 23),
+                  key: const Key('TextHomeHello'),
+                  "Hello ${useCase.user!.email}",
                 ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Center(
+                    child: Text('School: ${useCase.user!.school}'),
+                  ),
+                  Center(
+                    child: Text('Grade: ${useCase.user!.grade}'),
+                  ),
+                  Center(
+                    child: Text(
+                      "Current Difficulty: ${calculator.difficulty}",
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(5),
+                    child: Center(
+                      child: ElevatedButton(
+                        key: START,
+                        child: const SizedBox(
+                          width: 250,
+                          child: Center(child: Text('Start')),
+                        ),
+                        onPressed: () async {
+                          calculator.reset(useCase.user!.difficulty);
+                          await Get.to(() => CalculatorPage());
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(5),
+                    child: Center(
+                      child: ElevatedButton(
+                        key: HISTORY,
+                        child: const SizedBox(
+                          width: 250,
+                          child: Center(child: Text('History')),
+                        ),
+                        onPressed: () => Get.to(() => HistoryPage()),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(5),
+                    child: Center(
+                      child: ElevatedButton(
+                        child: const SizedBox(
+                          width: 250,
+                          child: Center(child: Text('Exit')),
+                        ),
+                        onPressed: () {
+                          if (Platform.isAndroid) {
+                            SystemNavigator.pop();
+                          } else if (Platform.isIOS) {
+                            exit(0);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
